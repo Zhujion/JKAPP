@@ -34,7 +34,11 @@ axios.interceptors.request.use(
       spinner: 'el-icon-loading',
       background: 'rgba(0,0,0,0.7)'
     })
-    if (config.method === 'post') {
+    let token = localStorage.getItem('x-auth-token')
+    console.log('token', token)
+    if (token) {
+      config.headers.token = `${token}`
+    } else if (config.method === 'post') {
       config.data = qs.stringify(config.data)
     }
     return config
@@ -48,13 +52,16 @@ axios.interceptors.request.use(
 // 返回状态判断（添加响应拦截器）
 axios.interceptors.response.use(
   res => {
-    console.log(res.data.code)
-    if (res.data.code === 200) {
+    // 根据后台定义的返回主体。1是成功 其他都是失败
+    console.log(res)
+    console.log('Reason', res.data.Retcode)
+    if (res.data.Retcode === 1) {
       loadingInstance.close()
       return res
     } else {
       loadingInstance.close()
-      Message.error(res.data.msg)
+      // 弹出失败原因
+      Message.error(res.data.Reason)
     }
   },
   err => {
@@ -66,21 +73,17 @@ axios.interceptors.response.use(
 // 发送请求post
 export function post (url, params) {
   return new Promise((resolve, reject) => {
-    console.log(url)
-    console.log(params)
     axios.post(url, params)
       .then(
         res => {
-          console.log(res)
           resolve(res.data)
         },
         err => {
-          console.log(err)
           reject(err.data)
         }
       )
       .catch(err => {
-        reject(err.data)
+        reject(err.data.reason)
       })
   })
 }

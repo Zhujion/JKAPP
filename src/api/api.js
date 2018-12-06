@@ -1,5 +1,5 @@
-import user from './user.js'
+import userAPI from './userAPI.js'
 
 export default {
-  user
+  userAPI
 }

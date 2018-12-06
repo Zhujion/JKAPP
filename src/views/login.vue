@@ -40,27 +40,22 @@ export default {
   methods: {
     submitLogin (userForm) {
       this.$refs[userForm].validate((valid) => {
-        console.log('进来了')
         // this.$router.push({path: '/Home'})
         if (valid) {
           // 定义要传输的josn字段
           let loginParams = { User: this.userForm.User, Password: this.userForm.Password }
-          console.log(loginParams)
           // 接口调用
-          this.$api.user.login(loginParams).then(res => {
-            console.log('ok')
-            console.log('打印信息' + res)
-            let { msg, code, user } = res
-            if (code !== 200) {
+          this.$api.userAPI.login(loginParams).then(res => {
+            let {Retcode, Reason, UserName} = res
+            if (Retcode !== 1) {
               this.$message({
                 type: 'error',
-                message: msg
+                message: Reason
               })
             } else {
-              sessionStorage.setItem('user', JSON.stringify(user)) // 登陆成功将当如 保存
-              this.$router.push({path: '/idnex'})
+              sessionStorage.setItem('user', JSON.stringify(UserName)) // 登陆成功将当如 保存
+              this.$router.push({path: '/index'})
             }
-            console.log(res)
           })
         }
       })
