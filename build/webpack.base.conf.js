@@ -36,7 +36,9 @@ module.exports = {
     alias: {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
-      'scss_vars': '@/styles/vars' // 这里是引用样式文件，后续扩展主体颜色
+      'scss_vars': '@/styles/vars', // 这里是引用样式文件，后续扩展主体颜色  ·
+      'utils': resolve('src/utils'),
+      'views': resolve('src/views')
     }
   },
   module: {

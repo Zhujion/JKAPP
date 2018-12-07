@@ -1,15 +1,12 @@
 <template>
     <div>
-      <h1>对不起，您访问的页面不存在！</h1>
+      我是用户也
     </div>
 </template>
 
 <script>
 export default {
-  data () {
-    return {
-    }
-  }
+  name: 'user_me'
 }
 </script>
 

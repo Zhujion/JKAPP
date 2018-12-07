@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import * as mUtils from '../utils/mUtils'
+import {mapActions, mapGetters} from 'vuex' // vuex 的 state 与 vue 的data  进行交互
 export default {
   name: 'login',
   data () {
@@ -38,7 +40,12 @@ export default {
     }
   },
   methods: {
+    ...mapActions(['addMenu', 'loadRoutes']),
+    // 登录操作
     submitLogin (userForm) {
+      this.saveUserInfo() // 存入缓存 ,用户展示用户名
+      this.generateMenuPushIndex() // 模拟动态生成菜单并定位到index
+      this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
       this.$refs[userForm].validate((valid) => {
         // this.$router.push({path: '/Home'})
         if (valid) {
@@ -46,15 +53,17 @@ export default {
           let loginParams = { User: this.userForm.User, Password: this.userForm.Password }
           // 接口调用
           this.$api.userAPI.login(loginParams).then(res => {
-            let {Retcode, Reason, UserName} = res
+            let {Retcode, Reason} = res
             if (Retcode !== 1) {
               this.$message({
                 type: 'error',
                 message: Reason
               })
             } else {
-              sessionStorage.setItem('user', JSON.stringify(UserName)) // 登陆成功将当如 保存
-              this.$router.push({path: '/index'})
+              // 登录成功
+              this.saveUserInfo() // 存入缓存 ,用户展示用户名
+              this.generateMenuPushIndex() // 模拟动态生成菜单并定位到index
+              this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
             }
           })
         }
@@ -63,11 +72,93 @@ export default {
     // 动态生成菜单
     generateMenuPushIndex () {
       const menData = [
-        {path: './home', name: '首页', components: 'home', children: [{path: '/home', name: '首页', components: 'home'}]
+        {
+          path: '/index',
+          name: '首页',
+          component: 'index',
+          icon: 'fa-server',
+          noDrowpdown: true,
+          children: [
+            {
+              path: '/index',
+              name: '首页',
+              component: 'idnex'
+            }
+          ]
+        },
+        {
+          path: '/userInfo/user_me',
+          name: '用户列表',
+          component: 'userInfo/user_me',
+          icon: 'fa-user',
+          noDrowpdown: true,
+          children: [
+            {
+              path: '/userInfo/user_me',
+              name: '用户列表',
+              component: 'userInfo/user_me'
+            }
+          ]
         }
       ]
-      this.$mUtils.setStore('menuData', menData) // 将菜单放入缓存
+      mUtils.setStore('menuData', menData) // 将菜单放入缓存
+      this.addMenu(menData) // 生成菜单,将菜单放入store
+      console.log(!this.isLoadRoutes)
+      if (!this.isLoadRoutes) { // 首次进来为false,改变其状态为true
+        const routes = mUtils.generateRoutesFromMenu(menData) // 根据菜单生成路由信息，需要将数据库返回对象的 Key值小写
+        console.log('生成的路由', routes)
+        const asyncRouterMap = [
+          {
+            path: '/404',
+            name: '404',
+            hidden: true,
+            component: require('./404')
+          },
+          {
+            path: '/index',
+            name: '',
+            hidden: true,
+            component: require('./home/index'),
+            redirect: '/index', // 重定向
+            children: routes // 嵌套路由
+          }
+        ]
+        console.log(asyncRouterMap)
+        this.$router.addRoutes(asyncRouterMap) // 添加路由
+        this.loadRules() // true 第二次就不用路由了
+      }
+      this.$router.push('/index') // 加载模块
+      this.$message({
+        type: 'success',
+        message: '登陆成功！'
+      })
+    },
+    // 保存用户信息
+    saveUserInfo () {
+      const userinfo = {
+        User: this.rul.User
+      }
+      mUtils.setStore('User', userinfo) // 将用户信息放入缓存
     }
+  },
+  watch: {
+    adminfo: function (newvalue) {
+      if (newvalue.id) {
+        this.$message({
+          type: 'success',
+          messge: '检测您之前登陆过，将自动登陆'
+        })
+        this.$router.push('index')
+      }
+    }
+  },
+  mounted () {
+    // 初始化
+  },
+  // 计算属性
+  computed: {
+    // 这里的...是对象扩展符
+    ...mapGetters(['menuitems', 'isLoadRoutes'])
   }
 }
 </script>
