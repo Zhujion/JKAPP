@@ -1,7 +1,7 @@
 import bread from './bread'
 import headNav from './headNav'
 import leftMenu from './leftMenu'
-import index from './indexJS'
+import index from '.'
 import content from './content'
 
 export {

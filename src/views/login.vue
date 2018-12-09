@@ -44,58 +44,61 @@ export default {
     // 登录操作
     submitLogin (userForm) {
       this.saveUserInfo() // 存入缓存 ,用户展示用户名
+      console.log('保存用户通过')
       this.generateMenuPushIndex() // 模拟动态生成菜单并定位到index
+      console.log('动态生成通过')
       this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
-      this.$refs[userForm].validate((valid) => {
-        // this.$router.push({path: '/Home'})
-        if (valid) {
-          // 定义要传输的josn字段
-          let loginParams = { User: this.userForm.User, Password: this.userForm.Password }
-          // 接口调用
-          this.$api.userAPI.login(loginParams).then(res => {
-            let {Retcode, Reason} = res
-            if (Retcode !== 1) {
-              this.$message({
-                type: 'error',
-                message: Reason
-              })
-            } else {
-              // 登录成功
-              this.saveUserInfo() // 存入缓存 ,用户展示用户名
-              this.generateMenuPushIndex() // 模拟动态生成菜单并定位到index
-              this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
-            }
-          })
-        }
-      })
+      console.log('菜单展开动态')
+      // this.$refs[userForm].validate((valid) => {
+      //   // this.$router.push({path: '/Home'})
+      //   if (valid) {
+      //     // 定义要传输的josn字段
+      //     let loginParams = { User: this.userForm.User, Password: this.userForm.Password }
+      //     // 接口调用
+      //     this.$api.userAPI.login(loginParams).then(res => {
+      //       let {Retcode, Reason} = res
+      //       if (Retcode !== 1) {
+      //         this.$message({
+      //           type: 'error',
+      //           message: Reason
+      //         })
+      //       } else {
+      //         // 登录成功
+      //         this.saveUserInfo() // 存入缓存 ,用户展示用户名
+      //         this.generateMenuPushIndex() // 模拟动态生成菜单并定位到index
+      //         this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
+      //       }
+      //     })
+      //   }
+      // })
     },
     // 动态生成菜单
     generateMenuPushIndex () {
       const menData = [
         {
           path: '/index',
-          name: '首页',
+          name: 'index',
           component: 'index',
           icon: 'fa-server',
           noDrowpdown: true,
           children: [
             {
               path: '/index',
-              name: '首页',
-              component: 'idnex'
+              name: 'index',
+              component: 'index'
             }
           ]
         },
         {
           path: '/userInfo/user_me',
-          name: '用户列表',
+          name: 'user_me',
           component: 'userInfo/user_me',
           icon: 'fa-user',
           noDrowpdown: true,
           children: [
             {
               path: '/userInfo/user_me',
-              name: '用户列表',
+              name: 'user_me',
               component: 'userInfo/user_me'
             }
           ]
@@ -103,7 +106,7 @@ export default {
       ]
       mUtils.setStore('menuData', menData) // 将菜单放入缓存
       this.addMenu(menData) // 生成菜单,将菜单放入store
-      console.log(!this.isLoadRoutes)
+      console.log('isLoadRoutes', !this.isLoadRoutes)
       if (!this.isLoadRoutes) { // 首次进来为false,改变其状态为true
         const routes = mUtils.generateRoutesFromMenu(menData) // 根据菜单生成路由信息，需要将数据库返回对象的 Key值小写
         console.log('生成的路由', routes)
@@ -112,22 +115,25 @@ export default {
             path: '/404',
             name: '404',
             hidden: true,
-            component: require('./404')
+            component: require('views/404.vue')
           },
           {
             path: '/index',
-            name: '',
+            name: 'index',
             hidden: true,
-            component: require('./home/index'),
+            component: require('views/home/zhuye.vue'),
             redirect: '/index', // 重定向
             children: routes // 嵌套路由
           }
         ]
-        console.log(asyncRouterMap)
+        console.log('打印路由', asyncRouterMap)
         this.$router.addRoutes(asyncRouterMap) // 添加路由
-        this.loadRules() // true 第二次就不用路由了
+        this.loadRoutes() // true 第二次就不用路由了
       }
-      this.$router.push('/index') // 加载模块
+      console.log('加载模块')
+      const tant = this
+      tant.$router.push('/index') // 加载模块
+      console.log('加载模块zhuye')
       this.$message({
         type: 'success',
         message: '登陆成功！'

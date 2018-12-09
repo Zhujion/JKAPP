@@ -1,14 +1,13 @@
 <template>
-    <div>
-      我是用户也
-    </div>
+    <div>我是主页</div>
 </template>
 
 <script>
 export default {
-  name: 'user_me',
+  name: 'index',
   data () {
-    return {}
+    return {
+    }
   }
 }
 </script>

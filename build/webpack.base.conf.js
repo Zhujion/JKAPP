@@ -38,7 +38,8 @@ module.exports = {
       '@': resolve('src'),
       'scss_vars': '@/styles/vars', // 这里是引用样式文件，后续扩展主体颜色  ·
       'utils': resolve('src/utils'),
-      'views': resolve('src/views')
+      'views': resolve('src/views'),
+      'store': resolve('src/store'),
     }
   },
   module: {

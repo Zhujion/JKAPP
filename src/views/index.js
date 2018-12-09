@@ -1,5 +1,9 @@
-import home from './home/index'
+import zhuye from './home/zhuye'
+import index from './index'
+import userme from './userInfo/user_me'
 
 export {
-  home
+  zhuye,
+  index,
+  userme
 }
