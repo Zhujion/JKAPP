@@ -42,6 +42,9 @@ router.beforeEach((route, redirect, next) => {
   }
   // 判断是否有用登陆记录
   let userInfo = JSON.parse(localStorage.getItem('userinfo'))
+  console.log('route.path', route.path)
+  console.log('userInfo', userInfo)
+  console.log('localStorage.getItem(\'userinfo\')', localStorage.getItem('userinfo'))
   if (!userInfo && route.path !== '/') {
     console.log('没有用户信息，route.path不是定位到登录页面的,直接跳登录页面')
     // 没有用户信息，route.path不是定位到登录页面的,直接跳登录页面

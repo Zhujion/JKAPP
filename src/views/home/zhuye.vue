@@ -1,15 +1,16 @@
 <template>
  <div class="home">
-   <head-nav></head-nav>
+   <HeadNav></HeadNav>
    <div class="lef-fixed-right-auto">
-     <left-menu></left-menu>
+     <leftMenu></leftMenu>
      <div class="content_page"
      :style="{'margin-left':$store.state.menu.sidebar.width,
      'width':$store.state.page.win_content.width+'px',
      'height':$store.state.page.win_content.height+'px'}">
         <div class="content">
-          <bread></bread>
-          <resource-view></resource-view><!--页面渲染入口-->
+          <Bread></Bread>
+          <router-view></router-view>
+            <!--页面渲染入口router-->
         </div>
      </div>
    </div>
@@ -17,9 +18,9 @@
 </template>
 
 <script>
-import HeadNav from './headNav'
-import Bread from './bread'
-import LeftMenu from './leftMenu'
+import HeadNav from './headNav.vue'
+import Bread from './bread.vue'
+import LeftMenu from './leftMenu.vue'
 
 export default {
   data () {
@@ -30,7 +31,7 @@ export default {
       }
     }
   },
-  component: {
+  components: {
     HeadNav,
     LeftMenu,
     Bread

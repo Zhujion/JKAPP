@@ -77,28 +77,28 @@ export default {
       const menData = [
         {
           path: '/index',
-          name: 'index',
+          name: '首页',
           component: 'index',
           icon: 'fa-server',
           noDrowpdown: true,
           children: [
             {
               path: '/index',
-              name: 'index',
+              name: '首页',
               component: 'index'
             }
           ]
         },
         {
           path: '/userInfo/user_me',
-          name: 'user_me',
+          name: '用户列表',
           component: 'userInfo/user_me',
           icon: 'fa-user',
           noDrowpdown: true,
           children: [
             {
               path: '/userInfo/user_me',
-              name: 'user_me',
+              name: '用户列表',
               component: 'userInfo/user_me'
             }
           ]
@@ -118,21 +118,21 @@ export default {
             component: require('views/404.vue')
           },
           {
-            path: '/index',
-            name: 'index',
+            path: '/zhuye',
+            name: '主页',
             hidden: true,
             component: require('views/home/zhuye.vue'),
-            redirect: '/index', // 重定向
+            // redirect: '/zhuye', // 重定向
             children: routes // 嵌套路由
           }
         ]
         console.log('打印路由', asyncRouterMap)
         this.$router.addRoutes(asyncRouterMap) // 添加路由
+        console.log('router', this.$router)
         this.loadRoutes() // true 第二次就不用路由了
       }
       console.log('加载模块')
-      const tant = this
-      tant.$router.push('/index') // 加载模块
+      this.$router.push({path: '/index'}) // 加载模块
       console.log('加载模块zhuye')
       this.$message({
         type: 'success',
@@ -142,9 +142,10 @@ export default {
     // 保存用户信息
     saveUserInfo () {
       const userinfo = {
-        User: this.rul.User
+        User: this.userForm.User
       }
-      mUtils.setStore('User', userinfo) // 将用户信息放入缓存
+      mUtils.setStore('userinfo', userinfo.User) // 将用户信息放入缓存
+      console.log('存的userinfo', userinfo.User)
     }
   },
   watch: {
