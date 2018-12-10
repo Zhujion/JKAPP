@@ -9,7 +9,7 @@
       <img src="../img/head.jpg" class="avatar" alt=""/>
       <div class="welcome">
         <p class="name comename">欢迎</p>
-        <p class="name avatarname">  <!--{{userinfo.User}}--></p>
+        <p class="name avatarname">{{userinfo.User}}</p>
       </div>
       <span class="username">
         <!--trigger指定事件类型-->
@@ -61,12 +61,12 @@ export default {
   data () {
     return {
       userinfo: {
-        User: 'jojo'
+        User: ''
       }
     }
   },
   created () {
-    this.userinfo = mUtils.getStore('userinfo')
+    this.userinfo = mUtils.getStore('userInfo')
   },
   methods: {
     logout () {

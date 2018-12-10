@@ -90,16 +90,16 @@ export default {
           ]
         },
         {
-          path: '/user_me',
+          path: '/userme',
           name: '用户列表',
-          component: 'user_me',
+          component: 'userme',
           icon: 'fa-user',
           noDrowpdown: true,
           children: [
             {
-              path: '/user_me',
+              path: '/userme',
               name: '用户列表',
-              component: 'user_me'
+              component: 'userme'
             }
           ]
         }
@@ -115,13 +115,13 @@ export default {
             path: '/404',
             name: '404',
             hidden: true,
-            component: require('page/404.vue')
+            component: (resolve) => require(['page/404.vue'], resolve)
           },
-          {
+          { // require.ensure([], (require) => {resolve(require('@/page/home.vue'))}
             path: '/index',
             name: '',
             hidden: true,
-            component: require('layout/home.vue'),
+            component: (resolve) => require(['layout/home.vue'], resolve),
             redirect: '/index', // 重定向
             children: routes // 嵌套路由
           }
@@ -130,7 +130,7 @@ export default {
         this.$router.addRoutes(asyncRouterMap) // 添加路由
         this.loadRoutes() // true 第二次就不用路由了
       }
-      this.$router.push('/404') // 加载模块
+      this.$router.push('/index') // 加载模块
       this.$message({
         type: 'success',
         message: '登陆成功！'

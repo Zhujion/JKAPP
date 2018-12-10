@@ -14,9 +14,10 @@ Vue.prototype.$api = api
 Vue.config.productionTip = false
 
 Vue.use(ElementUI, {size: 'mini'})
-
+localStorage.removeItem('menuData')
 const menData = JSON.parse(localStorage.getItem('menuData'))
 console.log('路由信息', localStorage.getItem('menuData'))
+
 if (menData) {
   console.log('进入配置')
   store.commit('ADD_MENU', menData)
@@ -26,7 +27,7 @@ if (menData) {
       path: '/index',
       name: '',
       hidden: true,
-      component: require('layout/home.vue'),
+      component: (resolve) => require(['layout/home.vue'], resolve),
       redirect: '/index',
       children: routes
     }
@@ -35,10 +36,13 @@ if (menData) {
 }
 router.beforeEach((route, redirect, next) => {
   console.log('进入配1置')
+
   // 定位到首页时 清空缓存数据
+  console.log('route-----', route.path)
   if (route.path === '/') {
+    console.log('进来清除用户信息和菜单')
     localStorage.removeItem('userInfo')
-    localStorage.removeItem('menData')
+    localStorage.removeItem('menuData')
     store.commit('ADD_MENU', [])
   }
   // 判断是否有用登陆记录
@@ -49,11 +53,14 @@ router.beforeEach((route, redirect, next) => {
     next({path: '/'})
   } else {
     console.log('222222=', route)
+    console.log('333333', route.name)
     if (route.name) {
       console.log('有用户信息和路由名称的，直接跳转路由的页面', route.name)
+      console.log('用户信息和路由名称的，')
       // 有用户信息和路由名称的，直接跳转路由的页面
       next()
     } else {
+      console.log('没有用户信息，')
       // 有用户信息，没有路由名称的，直接跳404页面。
       next({path: '/404'})
     }

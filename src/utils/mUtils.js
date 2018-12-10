@@ -39,14 +39,33 @@ export const generateRoutesFromMenu = (menuData = [], routes = [], componentNew)
   for (var i = 0; i < menuData.length; i++) {
     const menuobj = menuData[i]
     const component = menuData[i].component
+    console.log('开始生成')
+    let pathname = 'page/' + menuData[i].component + '.vue'
+    console.log(pathname)
     if (component && component !== 'content') {
-      componentNew = require('page/' + menuData[i].component + '.vue')
+      componentNew = getViews(menuData[i].component)
     } else {
-      componentNew = require('layout/' + menuData[i].component + '.vue')
+      componentNew = getViews2(menuData[i].component)
     }
     menuobj['component'] = componentNew
     routes.push(menuobj)
     generateRoutesFromMenu(menuobj.children)
   }
   return routes
+}
+
+export function getViews (path) {
+  return resolve => {
+    require.ensure([], (require) => {
+      resolve(require('page/' + path + '.vue'))
+    })
+  }
+}
+
+export function getViews2 (path) {
+  return resolve => {
+    require.ensure([], (require) => {
+      resolve(require('layout/' + path + '.vue'))
+    })
+  }
 }
