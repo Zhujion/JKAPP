@@ -90,16 +90,16 @@ export default {
           ]
         },
         {
-          path: '/userInfo/user_me',
+          path: '/user_me',
           name: '用户列表',
-          component: 'userInfo/user_me',
+          component: 'user_me',
           icon: 'fa-user',
           noDrowpdown: true,
           children: [
             {
-              path: '/userInfo/user_me',
+              path: '/user_me',
               name: '用户列表',
-              component: 'userInfo/user_me'
+              component: 'user_me'
             }
           ]
         }
@@ -109,31 +109,28 @@ export default {
       console.log('isLoadRoutes', !this.isLoadRoutes)
       if (!this.isLoadRoutes) { // 首次进来为false,改变其状态为true
         const routes = mUtils.generateRoutesFromMenu(menData) // 根据菜单生成路由信息，需要将数据库返回对象的 Key值小写
-        console.log('生成的路由', routes)
+        console.log('嵌套路由======', JSON.stringify(routes))
         const asyncRouterMap = [
           {
             path: '/404',
             name: '404',
             hidden: true,
-            component: require('views/404.vue')
+            component: require('page/404.vue')
           },
           {
-            path: '/zhuye',
-            name: '主页',
+            path: '/index',
+            name: '',
             hidden: true,
-            component: require('views/home/zhuye.vue'),
-            // redirect: '/zhuye', // 重定向
+            component: require('layout/home.vue'),
+            redirect: '/index', // 重定向
             children: routes // 嵌套路由
           }
         ]
-        console.log('打印路由', asyncRouterMap)
+        console.log('打印路由', JSON.stringify(asyncRouterMap))
         this.$router.addRoutes(asyncRouterMap) // 添加路由
-        console.log('router', this.$router)
         this.loadRoutes() // true 第二次就不用路由了
       }
-      console.log('加载模块')
-      this.$router.push({path: '/index'}) // 加载模块
-      console.log('加载模块zhuye')
+      this.$router.push('/404') // 加载模块
       this.$message({
         type: 'success',
         message: '登陆成功！'
@@ -144,8 +141,7 @@ export default {
       const userinfo = {
         User: this.userForm.User
       }
-      mUtils.setStore('userinfo', userinfo.User) // 将用户信息放入缓存
-      console.log('存的userinfo', userinfo.User)
+      mUtils.setStore('userInfo', userinfo) // 将用户信息放入缓存
     }
   },
   watch: {

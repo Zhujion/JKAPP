@@ -1,13 +1,13 @@
 import bread from './bread'
 import headNav from './headNav'
 import leftMenu from './leftMenu'
-import index from '.'
+import home from './home'
 import content from './content'
 
 export {
   bread,
   headNav,
   leftMenu,
-  index,
+  home,
   content
 }

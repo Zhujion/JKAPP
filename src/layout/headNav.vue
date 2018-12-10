@@ -2,14 +2,14 @@
 <header class="head-nav" id="header_container">
   <el-row style="margin: 0 10px">
     <el-col :span="6" class="logo-container">
-        <img src="../../img/hong.png" class="logo" alt=""/>
+      <img src="../img/hong.png" class="logo" alt=""/>
       <span class="title">接口平台信息化管理系统</span>
     </el-col>
     <div class="userinfo">
-      <img src="../../img/head.jpg" class="avatar" alt=""/>
+      <img src="../img/head.jpg" class="avatar" alt=""/>
       <div class="welcome">
         <p class="name comename">欢迎</p>
-        <p class="name avatarname">{{userinfo.User}}</p>
+        <p class="name avatarname">  <!--{{userinfo.User}}--></p>
       </div>
       <span class="username">
         <!--trigger指定事件类型-->
@@ -60,7 +60,9 @@ import * as mUtils from '@/utils/mUtils'
 export default {
   data () {
     return {
-      userinfo: ''
+      userinfo: {
+        User: 'jojo'
+      }
     }
   },
   created () {
@@ -126,7 +128,8 @@ export default {
     height: 60px;
     min-width:600px;
     padding: 5px;
-    background: url('../../img/head.jpg');
+    // background: url('../img/head.jpg');
+    background-color: rgb(84,92,100);
     position: fixed;
     top: 0px;
     left: 0px;

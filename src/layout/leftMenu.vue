@@ -62,7 +62,7 @@ export default {
   created () {
     // 在模板渲染之前进入这个方法
     // created:在模板渲染成html前调用，即通常初始化某些属性值，然后再渲染成视图。
-    console.log(this.$store.state.menu.items)
+    console.log('123123', this.$store.state.menu.items)
   },
   methods: {
     showDropdown () {
