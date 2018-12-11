@@ -91,7 +91,7 @@ export default {
         },
         {
           path: '/userpage/userme',
-          name: '用户列表',
+          name: '用户管理',
           component: 'userpage/userme',
           icon: 'icon-users',
           noDropdown: false,
@@ -103,12 +103,12 @@ export default {
             },
             {
               path: '/userpage/userme',
-              name: '用户列表',
+              name: '用户信息',
               component: 'userpage/userme'
             },
             {
               path: '/userme',
-              name: '用户列表',
+              name: '权限设置',
               component: 'userme'
             }
           ]

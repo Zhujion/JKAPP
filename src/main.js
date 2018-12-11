@@ -8,13 +8,14 @@ import ElementUI from 'element-ui' // 自己加的
 import '../node_modules/element-ui/lib/theme-chalk/index.css' // 自己加的
 import api from './api/api'// 接口
 import * as mUtils from 'utils/mUtils'
+import 'lib-flexible'
 
 Vue.prototype.$api = api
 
 Vue.config.productionTip = false
 
 Vue.use(ElementUI, {size: 'mini'})
-localStorage.removeItem('menuData') // 记得注释
+// localStorage.removeItem('menuData') // 记得注释
 const menData = JSON.parse(localStorage.getItem('menuData'))
 console.log('路由信息=====', JSON.stringify(menData))
 console.log('路由信息-----------', localStorage.getItem('menuData'))

@@ -49,7 +49,7 @@
           </el-submenu>
         </el-submenu>
         <el-menu-item index="3" disabled>消息中心</el-menu-item>
-        <el-menu-item index="4"><a href="https://www.ele.me" target="_blank">订单管理</a></el-menu-item>
+        <el-menu-item index="4"><a href="https://www.ele.me" target="_blank" style="text-decoration: none">订单管理</a></el-menu-item>
       </el-menu>
     </div>
   </el-row>
