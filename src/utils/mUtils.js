@@ -1,8 +1,10 @@
+
 /**
  * 存储localStorage
  * 而当页面会话结束——也就是说当页面被关闭时,数据存储在sessionStorage 会被清除 。
  */
 export const setStore = (name, content) => {
+  console.log('得到的name', name, '得到的vaue', content)
   if (!name) return
   if (typeof content !== 'string') {
     content = JSON.stringify(content) // 将对象转换成json字符串
@@ -14,6 +16,7 @@ export const setStore = (name, content) => {
  * 获取localStorage
  * */
 export const getStore = name => {
+  console.log('获取的缓存', name)
   if (!name) return
   var value = window.localStorage.getItem(name)
   if (value != null) {
@@ -40,8 +43,6 @@ export const generateRoutesFromMenu = (menuData = [], routes = [], componentNew)
     const menuobj = menuData[i]
     const component = menuData[i].component
     console.log('开始生成')
-    let pathname = 'page/' + menuData[i].component + '.vue'
-    console.log(pathname)
     if (component && component !== 'content') {
       componentNew = getViews(menuData[i].component)
     } else {

@@ -8,7 +8,7 @@ Vue.use(Router)
 const routes = [
   {
     path: '/',
-    name: '登陆',
+    name: '登录',
     component: login,
     // 这种写法相当于 import xx from 模块
     hidden: true

@@ -12,5 +12,5 @@ export default {
 </script>
 
 <style lang="less">
-
+@import "./common/stylus/icon.css";
 </style>

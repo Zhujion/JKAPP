@@ -79,8 +79,8 @@ export default {
           path: '/index',
           name: '首页',
           component: 'index',
-          icon: 'fa-server',
-          noDrowpdown: true,
+          icon: 'icon-home',
+          noDropdown: false,
           children: [
             {
               path: '/index',
@@ -90,12 +90,22 @@ export default {
           ]
         },
         {
-          path: '/userme',
+          path: '/userpage/userme',
           name: '用户列表',
-          component: 'userme',
-          icon: 'fa-user',
-          noDrowpdown: true,
+          component: 'userpage/userme',
+          icon: 'icon-users',
+          noDropdown: false,
           children: [
+            {
+              path: '/404',
+              name: '404',
+              component: '404'
+            },
+            {
+              path: '/userpage/userme',
+              name: '用户列表',
+              component: 'userpage/userme'
+            },
             {
               path: '/userme',
               name: '用户列表',
@@ -105,6 +115,7 @@ export default {
         }
       ]
       mUtils.setStore('menuData', menData) // 将菜单放入缓存
+      console.log('menuData缓存的菜单信息', JSON.parse(localStorage.getItem('menuData')))
       this.addMenu(menData) // 生成菜单,将菜单放入store
       console.log('isLoadRoutes', !this.isLoadRoutes)
       if (!this.isLoadRoutes) { // 首次进来为false,改变其状态为true

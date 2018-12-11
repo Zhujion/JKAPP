@@ -14,9 +14,10 @@ Vue.prototype.$api = api
 Vue.config.productionTip = false
 
 Vue.use(ElementUI, {size: 'mini'})
-localStorage.removeItem('menuData')
+localStorage.removeItem('menuData') // 记得注释
 const menData = JSON.parse(localStorage.getItem('menuData'))
-console.log('路由信息', localStorage.getItem('menuData'))
+console.log('路由信息=====', JSON.stringify(menData))
+console.log('路由信息-----------', localStorage.getItem('menuData'))
 
 if (menData) {
   console.log('进入配置')
@@ -47,6 +48,8 @@ router.beforeEach((route, redirect, next) => {
   }
   // 判断是否有用登陆记录
   let userInfo = JSON.parse(localStorage.getItem('userInfo'))
+  console.log('userInfo==', JSON.stringify(userInfo))
+  console.log('route.path==', route.path)
   if (!userInfo && route.path !== '/') {
     console.log('没有用户信息，route.path不是定位到登录页面的,直接跳登录页面')
     // 没有用户信息，route.path不是定位到登录页面的,直接跳登录页面

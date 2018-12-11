@@ -7,14 +7,14 @@
         class="el-menu-vertical-demo"
         :default-active="$route.path"
         :collapse="isCollapse"
-        background-color="#324057"
+        background-color="#323D4A"
         text-color="#fff"
         active-text-color="#ff6428">
         <template v-for="(item, index) in lefeMenuList">
           <!--表示 有二级菜单 -->
           <el-submenu v-if="item.children && item.children.length > 0 && !item.noDropdown" :index="item.path" :key="index">
             <template slot="title">
-              <i :class="'fa fa-margin' + item.icon"></i>
+              <i :class="item.icon"></i>
               <span slot="title">{{item.name}}</span>
             </template>
             <router-link v-for="(citem, cindex) in item.children" :to="citem.path" :key="cindex">
@@ -24,20 +24,21 @@
             </router-link>
           </el-submenu>
           <!--表示 有一级菜单 noDropdown:true-->
-          <resource-link :to="item.path" :key="index">
+          <router-link :to="item.path" :key="index">
             <el-submenu class="dropItem"
             v-if="item.children && item.children.length > 0 && item.noDropdown"
-            :index="item.path">
+                        :index="item.path">
               <template slot="title">
-                <i :class="'fa fa-margin' +item.icon "></i>
+                <i :class="item.icon"></i>
                 <span class="23">{{item.name}}</span>
               </template>
             </el-submenu>
-          </resource-link>
+          </router-link>
         </template>
       </el-menu>
     </el-col>
   </el-row>
+
 </template>
 
 <script>
@@ -78,7 +79,7 @@ export default {
     top: 70px;
     left: 0;
     min-height: 100%;
-    background-color: #324057;
+    background-color: rgb(50,61,74);
     z-index: 99;
   }
   .fa-margin {
@@ -93,6 +94,11 @@ export default {
   }
   .el-submenu .el-menu-item {
     min-width: 180px;
+    text-decoration: none !important;
+  }
+  .el-menu-item {
+    background-color: rgb(70,86,105) !important;
+    text-decoration: none !important;
   }
   .el-menu {
     .el-menu-item {
@@ -105,10 +111,18 @@ export default {
     display: none;
   }
   .router-link-active {
-    li {
-      .el-submenu__title{
-        color: #ff6428 !important;
-      }
-    }
+    text-decoration: none !important;
+    /*li {*/
+      /*.el-submenu__title{*/
+        /*color: #5CACEE !important;*/
+        /*//background-color: #465069;*/
+      /*}*/
+    /*}*/
   }
+  .router-link-active {
+    text-decoration: none;
+  }
+  a {
+     text-decoration: none;
+   }
 </style>
