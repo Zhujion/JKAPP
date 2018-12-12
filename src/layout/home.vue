@@ -44,6 +44,7 @@ export default {
         height: document.body.clientHeight - 73,
         width: document.body.clientWidth - 183
       }
+      console.log('高度========================', document.body.clientHeight)
       this.$store.dispatch('set_win_content', this.win_size) // 触发动作，content部分的宽高也随即改变。
     }
   },

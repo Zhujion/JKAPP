@@ -2,7 +2,7 @@
   <el-row>
     <el-col :span="11">
       <el-card>
-        <div>123</div>
+        <div style="height: 600px">123</div>
       </el-card>
     </el-col>
     <el-col :span="11" class="notify-row">

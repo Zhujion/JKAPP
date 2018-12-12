@@ -1,17 +1,17 @@
 <template>
   <el-form label-position="left" :rules="rul" :model="userForm" ref="userForm" label-width="0px"  class=" login-container demo-ruleForm">
-    <h3 class="title">接口平台</h3>
+    <h3 class="title">接口平台后台管理系统</h3>
     <el-form-item prop="User">
-      <el-input type="text" v-model="userForm.User" auto-complete="off" placeholder="账号"></el-input>
+      <el-input type="text" v-model="userForm.User"   auto-complete="off"  placeholder="账号" ></el-input>
     </el-form-item>
     <el-form-item prop="Password">
-      <el-input type="password" v-model="userForm.Password" auto-complete="off" placeholder="密码"></el-input>
+      <el-input type="password" v-model="userForm.Password"  auto-complete="off" placeholder="密码"></el-input>
     </el-form-item>
     <el-form-item>
       <el-checkbox checked  v-model="checked" class="el-checkbox remember">记住密码</el-checkbox>
     </el-form-item>
     <el-form-item>
-      <el-button type="primary" style="width: 100%"  @click.native.prevent="submitLogin('userForm')">登录</el-button>
+      <el-button type="primary" style="width: 100%;" class="inputhigh"  @click.native.prevent="submitLogin('userForm')">登录</el-button>
     </el-form-item>
   </el-form>
 </template>
@@ -45,7 +45,7 @@ export default {
     submitLogin (userForm) {
       this.saveUserInfo() // 存入缓存 ,用户展示用户名
       console.log('保存用户通过')
-      this.generateMenuPushIndex() // 模拟动态生成菜单并定位到index
+      this.generateMenuPushIndex('') // 模拟动态生成菜单并定位到index
       console.log('动态生成通过')
       this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
       console.log('菜单展开动态')
@@ -56,7 +56,7 @@ export default {
       //     let loginParams = { User: this.userForm.User, Password: this.userForm.Password }
       //     // 接口调用
       //     this.$api.userAPI.login(loginParams).then(res => {
-      //       let {Retcode, Reason} = res
+      //       let {Retcode, Reason, Usertpye} = res
       //       if (Retcode !== 1) {
       //         this.$message({
       //           type: 'error',
@@ -64,16 +64,24 @@ export default {
       //         })
       //       } else {
       //         // 登录成功
-      //         this.saveUserInfo() // 存入缓存 ,用户展示用户名
-      //         this.generateMenuPushIndex() // 模拟动态生成菜单并定位到index
-      //         this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
+      //         let menutype = {Usertype: Usertpye}
+      //         this.$api.userAPI.menudata(menutype).then(res => {
+      //           let {Retcode, Reason, Menues} = res
+      //           if (Retcode === 1) {
+      //             this.saveUserInfo() // 存入缓存 ,用户展示用户名
+      //             this.generateMenuPushIndex(Menues) // 模拟动态生成菜单并定位到index
+      //             this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
+      //           } else { // 菜单错误
+      //             this.$message.error(Reason)
+      //           }
+      //         })
       //       }
       //     })
       //   }
       // })
     },
     // 动态生成菜单
-    generateMenuPushIndex () {
+    generateMenuPushIndex (menDataa) {
       const menData = [
         {
           path: '/index',
@@ -92,28 +100,30 @@ export default {
         {
           path: '/userpage/userme',
           name: '用户管理',
-          component: 'userpage/userme',
+          component: 'content',
           icon: 'icon-users',
           noDropdown: false,
           children: [
-            {
-              path: '/404',
-              name: '404',
-              component: '404'
-            },
             {
               path: '/userpage/userme',
               name: '用户信息',
               component: 'userpage/userme'
             },
             {
-              path: '/userme',
-              name: '权限设置',
-              component: 'userme'
+              path: '/userpage/userLog',
+              name: '操作日志',
+              component: 'userpage/userLog'
+            },
+            {
+              path: '/userpage/Addpage',
+              name: '新增用户',
+              component: 'userpage/Addpage'
             }
           ]
         }
       ]
+      // const menData = menDataa
+      console.log('获取的菜单==', JSON.stringify(menData))
       mUtils.setStore('menuData', menData) // 将菜单放入缓存
       console.log('menuData缓存的菜单信息', JSON.parse(localStorage.getItem('menuData')))
       this.addMenu(menData) // 生成菜单,将菜单放入store
@@ -195,10 +205,14 @@ export default {
     margin: 0px auto 40px auto;
     text-align: center;
     color: #505458;
+    font-size: 20px;
   }
   .remember {
     margin: 0px 0px 35px 0px;
     float: left;
     height: 50%;
+  }
+  .inputhigh {
+    height: 35px;
   }
 </style>
