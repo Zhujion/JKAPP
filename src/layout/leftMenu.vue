@@ -12,12 +12,12 @@
         active-text-color="#ff6428">
         <template v-for="(item, index) in lefeMenuList">
           <!--表示 有二级菜单 -->
-          <el-submenu v-if="item.children && item.children.length > 0 && !item.noDropdown" :index="item.path" :key="index">
+          <el-submenu v-if="item.children && item.children.length > 0 && !item.noDropdown" :index="item.path" :key="index + 100">
             <template slot="title">
               <i :class="item.icon"></i>
               <span slot="title">{{item.name}}</span>
             </template>
-            <router-link v-for="(citem, cindex) in item.children" :to="citem.path" :key="cindex">
+            <router-link v-for="(citem, cindex) in item.children" :to="citem.path" :key="cindex * index + 2">
               <el-menu-item :index="citem.path">
                 <span slot="title">{{citem.name}}</span>
               </el-menu-item>

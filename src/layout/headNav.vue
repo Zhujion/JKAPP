@@ -13,7 +13,7 @@
       </div>
       <span class="username">
         <!--trigger指定事件类型-->
-        <el-dropdown trigger="click">
+        <el-dropdown trigger="click" @command="setDialogInfo">
             <span class="el-dropdown-link">
               <i class="el-icon-caret-bottom el-icon--right"></i>
             </span>
@@ -26,6 +26,9 @@
       </span>
       <i class="fa fa-sign-out logout" @click="logout"></i>
     </div>
+    <model v-show="isModelVisible" @close="closeModel"></model>
+    <uptpwd v-show="isPwdVisible" @close="closePwd"></uptpwd>
+    <userIndex v-show="isuserIndexVisble"  @close="closeUser">></userIndex>
     <!--工作台-->
     <!--<div class="notify-row">-->
       <!--<el-menu-->
@@ -59,23 +62,44 @@
 
 <script>
 import * as mUtils from '@/utils/mUtils'
+import model from '../components/Modal.vue'
+import uptpwd from '../page/userpage/updatepwd.vue'
+import userIndex from '../page/userpage/userIndex.vue'
 export default {
   data () {
     return {
       userinfo: {
         User: ''
-      }
+      },
+      isModelVisible: false,
+      isPwdVisible: false,
+      isUserVisble: false,
+      isuserIndexVisble: false
     }
+  },
+  components: {
+    model,
+    uptpwd,
+    userIndex
   },
   created () {
     this.userinfo = mUtils.getStore('userInfo')
   },
   methods: {
     logout () {
-      this.$router.push('/userInfo/user_me')
+      this.$router.push('/')
     },
     showInfoList () {
       this.$router.push('/userInfo/user_me')
+    },
+    closeModel: function () {
+      this.isModelVisible = false
+    },
+    closePwd: function () {
+      this.isPwdVisible = false
+    },
+    closeUser: function () {
+      this.isuserIndexVisble = false
     },
     /**
      * 弹出框-修改密码或者系统设置
@@ -90,8 +114,11 @@ export default {
       }
       switch (cmditem) {
         case 'info':
+          this.isuserIndexVisble = true
           break
         case 'pass':
+          this.isPwdVisible = true
+          console.log('进来了')
           break
         case 'logont':
           this.logout()
