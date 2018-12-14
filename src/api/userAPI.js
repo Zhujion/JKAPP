@@ -24,5 +24,9 @@ export default {
   // 删除用户(单个)
   delUser (params) {
     return post('/main/deluser', params)
+  },
+  // 修改密码
+  uptUserPwd (params) {
+    return post('/main/modifypassword', params)
   }
 }

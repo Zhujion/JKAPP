@@ -12,7 +12,7 @@
           <slot name="body">
             <el-form ref="form" :model="form" label-width="80px" class="fromSize">
               <el-form-item label="用户名称:">
-                <el-input v-model="form.Username" ></el-input>
+                <el-input v-model="form.Username"  disabled=""></el-input>
               </el-form-item>
               <el-form-item label="公司名称:">
                 <el-input v-model="form.Company" ></el-input>
@@ -32,7 +32,7 @@
         <div class="modal-footer">
           <slot name="footer">
             这是脚部
-            <el-button type="primary" @click="close" v-loading="isbtnUserVisible">确定</el-button>
+            <el-button type="primary" @click="editSubmit" v-loading="isbtnUserVisible">确定</el-button>
             <el-button @click="close">取消</el-button>
           </slot>
         </div>
@@ -60,7 +60,53 @@ export default {
   methods: {
     close: function () {
       this.$emit('close')
+    },
+    // 查询当前用户信息
+    selectUser: function () {
+      var userInfo = localStorage.getItem('userInfo')
+      let para = {Username: JSON.parse(userInfo).User, Currentpage: '1'}
+      let _this = this
+      this.$api.userAPI.UserPage(para).then(res => {
+        let {Retcode, Reason, Userinfos} = res
+        if (Retcode === 1) { // 成功
+          _this.form = Userinfos[0]
+        } else { // 失败
+          this.$message.error(Reason)
+        }
+      })
+    },
+    // 修改提交
+    editSubmit: function () {
+      this.$refs.form.validate((valid) => {
+        if (valid) {
+          this.$confirm('确定修改吗？', '提示', {}).then(() => {
+            this.isbtnUserVisible = true
+            var aa = this.form
+            let para = Object.assign({}, aa)
+            this.$api.userAPI.updateUser(para).then((res) => {
+              let {Retcode, Reason} = res
+              if (Retcode === 1) {
+                // 成功
+                this.$message({
+                  type: Reason,
+                  message: '修改个人信息成功！'
+                })
+                this.$refs['form'].resetFields() // 清空表单
+                this.$emit('close')
+              } else {
+                this.message.error(Reason)
+              }
+            })
+            this.isbtnUserVisible = false
+          }).catch(() => {
+            console.log('取消修改')
+          })
+        }
+      })
     }
+  },
+  mounted () {
+    this.selectUser()
   }
 }
 </script>

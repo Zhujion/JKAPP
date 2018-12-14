@@ -8,7 +8,6 @@
     <div class="userinfo">
       <img src="../img/head.jpg" class="avatar" alt=""/>
       <div class="welcome">
-        <p class="name comename">欢迎</p>
         <p class="name avatarname">{{userinfo.User}}</p>
       </div>
       <span class="username">
@@ -20,11 +19,11 @@
           <el-dropdown-menu slot="dropdown">
             <el-dropdown-item command="info">修改信息</el-dropdown-item>
             <el-dropdown-item command="pass">修改密码</el-dropdown-item>
-            <el-dropdown-item command="logout">退出</el-dropdown-item>
+            <el-dropdown-item command="logont">退出</el-dropdown-item>
           </el-dropdown-menu>
         </el-dropdown>
       </span>
-      <i class="fa fa-sign-out logout" @click="logout"></i>
+      <i class="icon-exit" @click="logout"></i>
     </div>
     <model v-show="isModelVisible" @close="closeModel"></model>
     <uptpwd v-show="isPwdVisible" @close="closePwd"></uptpwd>
@@ -87,6 +86,7 @@ export default {
   },
   methods: {
     logout () {
+      console.log('大厦---------')
       this.$router.push('/')
     },
     showInfoList () {
@@ -121,6 +121,7 @@ export default {
           console.log('进来了')
           break
         case 'logont':
+          console.log('大厦---------')
           this.logout()
           break
       }

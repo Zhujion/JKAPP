@@ -86,7 +86,7 @@
             <el-input v-model="editform.Email"></el-input>
           </el-form-item>
           <el-form-item label="公司地址:">
-            <el-input v-model="editform.Address"></el-input>
+            <el-input type="textarea" v-model="editform.Address"></el-input>
           </el-form-item>
         </el-form>
         <div slot="footer" class="dialog-footer">

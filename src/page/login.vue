@@ -1,28 +1,37 @@
 <template>
-  <el-form label-position="left" :rules="rul" :model="userForm" ref="userForm" label-width="0px"  class=" login-container demo-ruleForm">
-    <h3 class="title">接口平台后台管理系统</h3>
-    <el-form-item prop="User">
-      <el-input type="text" v-model="userForm.User"   auto-complete="off"  placeholder="账号" ></el-input>
-    </el-form-item>
-    <el-form-item prop="Password">
-      <el-input type="password" v-model="userForm.Password"  auto-complete="off" placeholder="密码"></el-input>
-    </el-form-item>
-    <el-form-item>
-      <el-checkbox checked  v-model="checked" class="el-checkbox remember">记住密码</el-checkbox>
-    </el-form-item>
-    <el-form-item>
-      <el-button type="primary" style="width: 100%;" class="inputhigh"  @click.native.prevent="submitLogin('userForm')">登录</el-button>
-    </el-form-item>
-  </el-form>
+  <div class="login_page">
+    <el-form label-position="left" :rules="rul" :model="userForm" ref="userForm"
+             label-width="0px"  class=" login-container demo-ruleForm">
+      <h3 class="title">接口平台后台管理系统</h3>
+      <el-form-item prop="User">
+        <el-input type="text" v-model="userForm.User"   auto-complete="off" prefix-icon="icon-user" class="input_color" placeholder="用户名" ></el-input>
+      </el-form-item>
+      <el-form-item prop="Password">
+        <el-input type="password" v-model="userForm.Password"  auto-complete="off" prefix-icon="icon-key" input_color="input_color" placeholder="请输入登录密码"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <!--验证码-->
+      </el-form-item>
+      <el-form-item>
+        <el-checkbox checked  v-model="checked" class="el-checkbox remember">记住密码</el-checkbox>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" style="width: 100%;" class="inputhigh"  @click.native.prevent="submitLogin('userForm')">登录</el-button>
+      </el-form-item>
+    </el-form>
+  </div>
 </template>
 
 <script>
 import * as mUtils from '../utils/mUtils'
-import {mapActions, mapGetters} from 'vuex' // vuex 的 state 与 vue 的data  进行交互
+import {mapActions, mapGetters} from 'vuex'
 export default {
   name: 'login',
   data () {
     return {
+      // 验证码
+      identifyCodes: '1234567890',
+      identifyCode: '',
       // 验证方式
       rul: {
         User: [
@@ -56,7 +65,8 @@ export default {
       //     let loginParams = { User: this.userForm.User, Password: this.userForm.Password }
       //     // 接口调用
       //     this.$api.userAPI.login(loginParams).then(res => {
-      //       let {Retcode, Reason, Usertpye} = res
+      //       let {Retcode, Reason, Usertype} = res
+      //       console.log('-----------', res)
       //       if (Retcode !== 1) {
       //         this.$message({
       //           type: 'error',
@@ -64,7 +74,7 @@ export default {
       //         })
       //       } else {
       //         // 登录成功
-      //         let menutype = {Usertype: Usertpye}
+      //         let menutype = {Usertype: Usertype}
       //         this.$api.userAPI.menudata(menutype).then(res => {
       //           let {Retcode, Reason, Menues} = res
       //           if (Retcode === 1) {
@@ -118,6 +128,30 @@ export default {
               path: '/userpage/Addpage',
               name: '新增用户',
               component: 'userpage/Addpage'
+            }
+          ]
+        },
+        {
+          path: '/medica/medicaIndex',
+          name: '信息管理',
+          component: 'content',
+          icon: 'icon-shield',
+          noDropdown: false,
+          children: [
+            {
+              path: '/medica/medicaIndex',
+              name: '医疗机构',
+              component: 'medica/medicaIndex'
+            },
+            {
+              path: '/medica/queryDn',
+              name: '医师护士',
+              component: 'medica/queryDn'
+            },
+            {
+              path: '/medica/medicaLog',
+              name: '操作日志',
+              component: 'medica/medicaLog'
             }
           ]
         }
@@ -177,7 +211,6 @@ export default {
     }
   },
   mounted () {
-    // 初始化
   },
   // 计算属性
   computed: {
@@ -188,6 +221,17 @@ export default {
 </script>
 
 <style lang="less" scoped>
+  .login_page {
+    background-repeat:no-repeat;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background: url("../img/bg1.jpg") no-repeat center center;
+    background-size:cover;
+    overflow:hidden;
+    left:0;
+    top: 0;
+  }
   .login-container {
     /*box-shadow: 0 0px 8px 0 rgba(0, 0, 0, 0.06), 0 1px 0px 0 rgba(0, 0, 0, 0.02);*/
     -webkit-border-radius: 5px;
@@ -199,7 +243,7 @@ export default {
     padding: 35px 35px 15px 35px;
     background: #fff;
     border: 1px solid #eaeaea;
-    box-shadow: 0 0 25px #cac6c6;
+    // box-shadow: 0 0 25px #cac6c6;
   }
   .title {
     margin: 0px auto 40px auto;
@@ -212,7 +256,8 @@ export default {
     float: left;
     height: 50%;
   }
-  .inputhigh {
-    height: 35px;
+  input:-webkit-autofill
+  {
+    -webkit-box-shadow: 0 0 0 1000px white inset;  //使用足够大的纯色内阴影覆盖黄色背景
   }
 </style>

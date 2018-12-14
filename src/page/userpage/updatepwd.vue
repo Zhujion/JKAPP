@@ -25,7 +25,7 @@
         </div>
         <div class="modal-footer">
           <slot name="footer">
-            <el-button type="primary" @click="close" v-loading="isbtnPwdVisible">确定</el-button>
+            <el-button type="primary" @click="uptpwd" v-loading="isbtnPwdVisible">确定</el-button>
             <el-button @click="close">取消</el-button>
           </slot>
         </div>
@@ -35,6 +35,7 @@
 </template>
 
 <script>
+
 export default {
   props: ['show'],
   name: 'updatepwd',
@@ -62,6 +63,36 @@ export default {
   methods: {
     close: function () {
       this.$emit('close')
+    },
+    // 修改密码
+    uptpwd: function () {
+      this.$refs.pwdForm.validate((visible) => {
+        this.isbtnPwdVisible = true
+        if (visible) {
+          this.$confirm('确定修改密码吗？', '提示', {}).then(() => {
+            var _this = this.pwdForm
+            var userInfo = localStorage.getItem('userInfo')
+            let para = {Username: JSON.parse(userInfo).User, Oldpass: _this.password, Newpass: _this.surepassword}
+            console.log('===============', JSON.stringify(para))
+            console.log('================', para)
+            this.$api.userAPI.uptUserPwd(para).then((res) => {
+              let {Retcode, Reason} = res
+              if (Retcode === 1) {
+                this.$message({
+                  type: Reason,
+                  message: '修改密码成功，请重新登录！'
+                })
+                this.$refs['pwdForm'].resetFields()
+                this.$emit('close')
+                this.$router.push('/') // 加载模块
+              } else {
+                this.message.error(Reason)
+              }
+            })
+          }).catch(() => {})
+        }
+        this.isbtnPwdVisible = false
+      })
     }
   }
 }

@@ -83,7 +83,7 @@ export function post (url, params) {
         }
       )
       .catch(err => {
-        reject(err.data.reason)
+        reject(err.data)
       })
   })
 }
