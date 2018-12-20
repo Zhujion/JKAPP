@@ -86,8 +86,24 @@ export default {
   },
   methods: {
     logout () {
-      console.log('大厦---------')
-      this.$router.push('/')
+      console.log('获取用户名', this.userinfo.User)
+      let param = {Username: this.userinfo.User}
+      this.$api.userAPI.UserOut(param).then((res) => {
+        let {Retcode, Reason} = res
+        if (Retcode === 1) {
+          mUtils.clearCookie() // 清除用户信息
+          this.$message({
+            type: 'success',
+            message: '用户登出成功!'
+          })
+          this.$router.push('/')
+        } else {
+          this.$message({
+            type: 'info',
+            message: Reason
+          })
+        }
+      })
     },
     showInfoList () {
       this.$router.push('/userInfo/user_me')
@@ -118,13 +134,14 @@ export default {
           break
         case 'pass':
           this.isPwdVisible = true
-          console.log('进来了')
           break
         case 'logont':
-          console.log('大厦---------')
           this.logout()
           break
       }
+    },
+    // 判断密码是否为初始密码
+    getpwd: function () {
     }
   }
 }

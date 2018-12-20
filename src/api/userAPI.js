@@ -28,5 +28,9 @@ export default {
   // 修改密码
   uptUserPwd (params) {
     return post('/main/modifypassword', params)
+  },
+  // 登出
+  UserOut (params) {
+    return post('/main/loginout', params)
   }
 }

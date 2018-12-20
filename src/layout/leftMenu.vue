@@ -12,7 +12,7 @@
         active-text-color="#ff6428">
         <template v-for="(item, index) in lefeMenuList">
           <!--表示 有二级菜单 -->
-          <el-submenu v-if="item.children && item.children.length > 0 && !item.noDropdown" :index="item.path" :key="index + 100">
+          <el-submenu v-if="item.children && item.children.length > 0 && item.noDropdown ==='false' " :index="item.path" :key="index + 100">
             <template slot="title">
               <i :class="item.icon"></i>
               <span slot="title">{{item.name}}</span>
@@ -26,7 +26,7 @@
           <!--表示 有一级菜单 noDropdown:true-->
           <router-link :to="item.path" :key="index">
             <el-submenu class="dropItem"
-            v-if="item.children && item.children.length > 0 && item.noDropdown"
+            v-if="item.children && item.children.length > 0 && item.noDropdown ==='true'"
                         :index="item.path">
               <template slot="title">
                 <i :class="item.icon"></i>

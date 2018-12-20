@@ -13,7 +13,6 @@ import 'lib-flexible'
 Vue.prototype.$api = api
 
 Vue.config.productionTip = false
-
 Vue.use(ElementUI)
 // window.onresize = setHtmlFontSize
 // function setHtmlFontSize () {
@@ -24,8 +23,8 @@ Vue.use(ElementUI)
 // setHtmlFontSize()
 // localStorage.removeItem('menuData') // 记得注释
 const menData = JSON.parse(localStorage.getItem('menuData'))
-console.log('路由信息=====', JSON.stringify(menData))
-console.log('路由信息-----------', localStorage.getItem('menuData'))
+// console.log('路由信息=====', JSON.stringify(menData))
+// console.log('路由信息-----------', localStorage.getItem('menuData'))
 
 if (menData) {
   console.log('进入配置')

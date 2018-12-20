@@ -12,6 +12,20 @@ export const setStore = (name, content) => {
   window.localStorage.setItem(name, content)
 }
 
+// 设置cookie
+export function setCoockie (cName, cpwd, exdays) {
+  var exdate = new Date() // 获取时间
+  exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays)// 保存天数
+  // 字符串拼接cookie
+  window.document.cookie = 'userName' + '=' + cName + ';path=/;expires=' + exdate.toGMTString()
+  window.document.cookie = 'userPwd' + '=' + cpwd + ';path=/;expires=' + exdate.toGMTString()
+}
+// 清除 cookie
+export function clearCookie () {
+  // 修改2值都为空，天数为负1天就好了
+  setCoockie('', '', -1)
+}
+
 /**
  * 获取localStorage
  * */

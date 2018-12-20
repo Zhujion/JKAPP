@@ -73,8 +73,6 @@ export default {
             var _this = this.pwdForm
             var userInfo = localStorage.getItem('userInfo')
             let para = {Username: JSON.parse(userInfo).User, Oldpass: _this.password, Newpass: _this.surepassword}
-            console.log('===============', JSON.stringify(para))
-            console.log('================', para)
             this.$api.userAPI.uptUserPwd(para).then((res) => {
               let {Retcode, Reason} = res
               if (Retcode === 1) {

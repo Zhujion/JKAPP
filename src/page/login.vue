@@ -13,7 +13,7 @@
         <!--验证码-->
       </el-form-item>
       <el-form-item>
-        <el-checkbox checked  v-model="checked" class="el-checkbox remember">记住密码</el-checkbox>
+        <el-checkbox    v-model="checked" class="">七天免登录</el-checkbox >
       </el-form-item>
       <el-form-item>
         <el-button type="primary" style="width: 100%;" class="inputhigh"  @click.native.prevent="submitLogin('userForm')">登录</el-button>
@@ -42,129 +42,141 @@ export default {
         ]
       },
       userForm: {// 定义用户字段
-        User: 'admin',
-        Password: '123456'
+        User: '',
+        Password: ''
       },
-      checked: true
+      checked: false,
+      datamiao: 6, // 确认登录的秒
+      t: '' // 控制自动关闭
     }
   },
   methods: {
     ...mapActions(['addMenu', 'loadRoutes']),
     // 登录操作
     submitLogin (userForm) {
-      this.saveUserInfo() // 存入缓存 ,用户展示用户名
-      console.log('保存用户通过')
-      this.generateMenuPushIndex('') // 模拟动态生成菜单并定位到index
-      console.log('动态生成通过')
-      this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
-      console.log('菜单展开动态')
-      // this.$refs[userForm].validate((valid) => {
-      //   // this.$router.push({path: '/Home'})
-      //   if (valid) {
-      //     // 定义要传输的josn字段
-      //     let loginParams = { User: this.userForm.User, Password: this.userForm.Password }
-      //     // 接口调用
-      //     this.$api.userAPI.login(loginParams).then(res => {
-      //       let {Retcode, Reason, Usertype} = res
-      //       console.log('-----------', res)
-      //       if (Retcode !== 1) {
-      //         this.$message({
-      //           type: 'error',
-      //           message: Reason
-      //         })
-      //       } else {
-      //         // 登录成功
-      //         let menutype = {Usertype: Usertype}
-      //         this.$api.userAPI.menudata(menutype).then(res => {
-      //           let {Retcode, Reason, Menues} = res
-      //           if (Retcode === 1) {
-      //             this.saveUserInfo() // 存入缓存 ,用户展示用户名
-      //             this.generateMenuPushIndex(Menues) // 模拟动态生成菜单并定位到index
-      //             this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
-      //           } else { // 菜单错误
-      //             this.$message.error(Reason)
-      //           }
-      //         })
-      //       }
-      //     })
-      //   }
-      // })
+      // this.saveUserInfo() // 存入缓存 ,用户展示用户名
+      // console.log('保存用户通过')
+      // this.generateMenuPushIndex('') // 模拟动态生成菜单并定位到index
+      // console.log('动态生成通过')
+      // this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
+      // console.log('菜单展开动态')
+      this.$refs[userForm].validate((valid) => {
+        // this.$router.push({path: '/Home'})
+        if (valid) {
+          this.loginGo() // 登录方法
+        }
+      })
+    },
+    // 登录的方法
+    loginGo () {
+      // 定义要传输的josn字段
+      let loginParams = { User: this.userForm.User, Password: this.userForm.Password }
+      // 接口调用
+      this.$api.userAPI.login(loginParams).then(res => {
+        let {Retcode, Reason, Usertype} = res
+        console.log('-----------', res)
+        if (Retcode !== 1) {
+          console.log('登录失败')
+          this.$message({
+            type: 'error',
+            message: Reason
+          })
+        } else {
+          // 登录成功
+          let menutype = {Usertype: Usertype}
+          console.log('登录成功，用户类型', Usertype)
+          this.$api.userAPI.menudata(menutype).then(res => {
+            let {Retcode, Reason, Menues} = res
+            console.log('获取菜单信息', Retcode)
+            if (Retcode === 1) {
+              if (this.checked) {
+                mUtils.setCoockie(this.userForm.User, this.userForm.Password, 7) // 保存用户信息
+              } else {
+                mUtils.clearCookie() // 删除用户信息
+              }
+              this.saveUserInfo() // 存入缓存 ,用户展示用户名
+              console.log('登陆--------路由', JSON.stringify(Menues))
+              let userInfo = mUtils.getStore('userInfo')
+              console.log('登陆----------------', JSON.stringify(userInfo))
+              this.generateMenuPushIndex(Menues) // 模拟动态生成菜单并定位到index
+              this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
+            } else { // 菜单错误
+              this.$message.error(Reason)
+            }
+          })
+        }
+      })
     },
     // 动态生成菜单
-    generateMenuPushIndex (menDataa) {
-      const menData = [
-        {
-          path: '/index',
-          name: '首页',
-          component: 'index',
-          icon: 'icon-home',
-          noDropdown: false,
-          children: [
-            {
-              path: '/index',
-              name: '首页',
-              component: 'index'
-            }
-          ]
-        },
-        {
-          path: '/userpage/userme',
-          name: '用户管理',
-          component: 'content',
-          icon: 'icon-users',
-          noDropdown: false,
-          children: [
-            {
-              path: '/userpage/userme',
-              name: '用户信息',
-              component: 'userpage/userme'
-            },
-            {
-              path: '/userpage/userLog',
-              name: '操作日志',
-              component: 'userpage/userLog'
-            },
-            {
-              path: '/userpage/Addpage',
-              name: '新增用户',
-              component: 'userpage/Addpage'
-            }
-          ]
-        },
-        {
-          path: '/medica/medicaIndex',
-          name: '信息管理',
-          component: 'content',
-          icon: 'icon-shield',
-          noDropdown: false,
-          children: [
-            {
-              path: '/medica/medicaIndex',
-              name: '医疗机构',
-              component: 'medica/medicaIndex'
-            },
-            {
-              path: '/medica/queryDn',
-              name: '医师护士',
-              component: 'medica/queryDn'
-            },
-            {
-              path: '/medica/medicaLog',
-              name: '操作日志',
-              component: 'medica/medicaLog'
-            }
-          ]
-        }
-      ]
+    generateMenuPushIndex (menData) {
+      // const menData = [
+      //   {
+      //     path: '/index',
+      //     name: '首页',
+      //     component: 'index',
+      //     icon: 'icon-home',
+      //     noDropdown: true,
+      //     children: [
+      //       {
+      //         path: '/index',
+      //         name: '首页',
+      //         component: 'index'
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     path: '/userpage/userme',
+      //     name: '用户管理',
+      //     component: 'content',
+      //     icon: 'icon-users',
+      //     noDropdown: false,
+      //     children: [
+      //       {
+      //         path: '/userpage/userme',
+      //         name: '用户信息',
+      //         component: 'userpage/userme'
+      //       },
+      //       {
+      //         path: '/userpage/userLog',
+      //         name: '用户日志',
+      //         component: 'userpage/userLog'
+      //       }
+      //     ]
+      //   },
+      //   {
+      //     path: '/medica/medicaIndex',
+      //     name: '信息管理',
+      //     component: 'content',
+      //     icon: 'icon-shield',
+      //     noDropdown: false,
+      //     children: [
+      //       {
+      //         path: '/medica/medicaIndex',
+      //         name: '医疗机构',
+      //         component: 'medica/medicaIndex'
+      //       },
+      //       {
+      //         path: '/medica/queryDn',
+      //         name: '信息搜索',
+      //         component: 'medica/queryDn'
+      //       },
+      //       {
+      //         path: '/medica/medicaLog',
+      //         name: '操作日志',
+      //         component: 'medica/medicaLog'
+      //       }
+      //     ]
+      //   }
+      // ]
       // const menData = menDataa
-      console.log('获取的菜单==', JSON.stringify(menData))
+      // console.log('获取的菜单==', JSON.stringify(menData))
       mUtils.setStore('menuData', menData) // 将菜单放入缓存
-      console.log('menuData缓存的菜单信息', JSON.parse(localStorage.getItem('menuData')))
+      // console.log('menuData缓存的菜单信息', JSON.parse(localStorage.getItem('menuData')))
       this.addMenu(menData) // 生成菜单,将菜单放入store
       console.log('isLoadRoutes', !this.isLoadRoutes)
       if (!this.isLoadRoutes) { // 首次进来为false,改变其状态为true
         const routes = mUtils.generateRoutesFromMenu(menData) // 根据菜单生成路由信息，需要将数据库返回对象的 Key值小写
-        console.log('嵌套路由======', JSON.stringify(routes))
+        // console.log('嵌套路由======', JSON.stringify(routes))
         const asyncRouterMap = [
           {
             path: '/404',
@@ -197,20 +209,73 @@ export default {
         User: this.userForm.User
       }
       mUtils.setStore('userInfo', userinfo) // 将用户信息放入缓存
+    },
+    // cookie 倒计时
+    getmiao: function () {
+      console.log('进来了=========')
+      // if (this.datamiao === 0) {
+      //   // 登录
+      //   alert('登录')
+      //   this.datamiao = 6
+      // }
+      this.datamiao = this.datamiao - 1
+      this.t = setTimeout(this.getmiao(), 1000)
+    },
+    // 读取cookie
+    getCookie: function () {
+      // 获取用户的coocki
+      if (document.cookie.length > 0) {
+        this.checked = true
+        var arr = document.cookie.split(';')
+        for (var i = 0; i < arr.length; i++) {
+          var arr2 = arr[i].split('=')
+          if (arr2[0] === 'userName') {
+            this.userForm.User = arr2[1] // 保存到保存数据的地方
+          }
+          if (arr2[0] === ' userPwd') {
+            this.userForm.Password = arr2[1]
+          }
+        }
+        // 判断 是否登录
+        this.$confirm('检测到用户信息，是否登录！', '自动登录', {
+          confirmButtonText: '确定登录(' + this.datamiao + ')S',
+          cancelButtonText: '更换账号',
+          type: 'warning'
+        }).then(() => {
+          if (this.userForm) {
+            this.loginGo() // 登录的方法
+          }
+        }).catch(() => {
+          console.log('更换账号---获取用户名', this.userForm.User)
+          let param = {Username: this.userForm.User}
+          this.$api.userAPI.UserOut(param).then((res) => {
+            let {Retcode, Reason} = res
+            if (Retcode === 1) {
+              this.$message({
+                type: 'success',
+                message: '用户登出成功,请输入新用户名和密码！'
+              })
+              this.$refs['userForm'].resetFields() // 清空表单
+              mUtils.clearCookie() // 清除缓存
+            } else {
+              this.$message({
+                type: 'info',
+                message: Reason
+              })
+            }
+          })
+        })
+      }
+    },
+    // 清除cookie
+    clearCookie: function () {
+      mUtils.clearCookie() // 清除
     }
   },
   watch: {
-    adminfo: function (newvalue) {
-      if (newvalue.id) {
-        this.$message({
-          type: 'success',
-          messge: '检测您之前登陆过，将自动登陆'
-        })
-        this.$router.push('index')
-      }
-    }
   },
   mounted () {
+    this.getCookie()
   },
   // 计算属性
   computed: {
@@ -240,21 +305,25 @@ export default {
     background-clip: padding-box;
     margin: 180px auto;
     width: 350px;
-    padding: 35px 35px 15px 35px;
-    background: #fff;
-    border: 1px solid #eaeaea;
+    padding: 1px;
+    // background: #fff;
+    // border: 1px solid #eaeaea;
     // box-shadow: 0 0 25px #cac6c6;
   }
   .title {
     margin: 0px auto 40px auto;
     text-align: center;
-    color: #505458;
+    color: #fff;
     font-size: 20px;
   }
   .remember {
     margin: 0px 0px 35px 0px;
     float: left;
     height: 50%;
+
+  }
+  .el-checkbox__input.is-checked+.el-checkbox__label {
+    color: red !important;
   }
   input:-webkit-autofill
   {

@@ -6,7 +6,7 @@ import { Message, Loading } from 'element-ui'
 // 响应时间
 axios.defaults.timeout = 5 * 1000
 // 配置Cookie
-axios.defaults.withCredentials = false
+axios.defaults.withCredentials = true
 // 配置请求头
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 // 静态资源
@@ -35,10 +35,13 @@ axios.interceptors.request.use(
       background: 'rgba(0,0,0,0.7)'
     })
     let token = localStorage.getItem('x-auth-token')
-    console.log('token', token)
+    // token = '我是请求头'
+    console.log('token===========', `${token}`)
     if (token) {
+      console.log('进来了-------token')
       config.headers.token = `${token}`
-    } else if (config.method === 'post') {
+    }
+    if (config.method === 'post') {
       config.data = qs.stringify(config.data)
     }
     return config
@@ -54,10 +57,14 @@ axios.interceptors.response.use(
   res => {
     // 根据后台定义的返回主体。1是成功 其他都是失败
     console.log(res)
-    console.log('Reason', res.data.Retcode)
+    console.log('Reason------------', res.data.Retcode)
+    console.log('菜单-12312312312-', JSON.parse(localStorage.getItem('menuData')))
     if (res.data.Retcode === 1) {
       loadingInstance.close()
       return res
+    } else if (res.data.Retcode === 3) {
+      // 用户未登录 错误3
+      Message.error(res.data.Reason + '12343')
     } else {
       loadingInstance.close()
       // 弹出失败原因

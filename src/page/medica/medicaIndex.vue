@@ -17,16 +17,16 @@
       <!--表格-->
       <el-table :data="pageData.tableData" overf highlight-current-row v-loading="listLoading"
                 @selection-change="selsChange" style="width: 100%">
-        <el-table-column type="selection" ></el-table-column>
-        <el-table-column prop="Procincecode" label="省份代码" sortable></el-table-column>
-        <el-table-column prop="Province" label="省份名称" sortable></el-table-column>
+        <el-table-column type="selection" aria-disabled="false" ></el-table-column>
         <el-table-column prop="Unitname" label="医疗机构" sortable></el-table-column>
+        <el-table-column prop="Provincecode" label="省份代码" sortable></el-table-column>
+        <el-table-column prop="Province" label="省份名称" sortable></el-table-column>
         <el-table-column prop="Addr" label="地址" sortable ></el-table-column>
         <el-table-column prop="C_syzxs" label="所有制形式" sortable></el-table-column>
-        <el-table-column prop="Naturebusi" label="机构级别" sortable ></el-table-column>
+        <el-table-column prop="Naturebusi" label="机构类别" sortable ></el-table-column>
         <el-table-column label="操作" >
           <template slot-scope="scope">
-            <el-button size="small" @click="HandleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="small"  @click="HandleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button type="danger" @click="handlDel(scope.$index, scope.row)" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -50,8 +50,8 @@
       <!--新增弹出层-->
       <el-dialog title="新增" :visible.sync="addFormVisible" :close-on-click-modal="false" :append-to-body="true">
         <el-form ref="addform" :model="addform" label-width="80px" :rules="addFormRules">
-          <el-form-item label="省份代码:" prop="procincecode">
-            <el-input v-model="addform.Procincecode" auto-complete="off"></el-input>
+          <el-form-item label="省份代码:" prop="Provincecode">
+            <el-input v-model="addform.Provincecode" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="省份名称:" prop="province">
             <el-input v-model="addform.Province" ></el-input>
@@ -59,11 +59,11 @@
           <el-form-item label="机构名称:" prop="unitname">
             <el-input v-model="addform.Unitname" ></el-input>
           </el-form-item>
-          <el-form-item label="机构级别:" prop="c_jglb">
+          <el-form-item label="机构类别:" prop="c_jglb">
             <el-input v-model="addform.C_jglb" ></el-input>
           </el-form-item>
-          <el-form-item label="机构等次:" prop="c_jgbc">
-            <el-input v-model="addform.C_jgbc" ></el-input>
+          <el-form-item label="机构等次:" prop="c_jgdc">
+            <el-input v-model="addform.C_jgdc" ></el-input>
           </el-form-item>
           <el-form-item label="经营性质:" prop="naturebusi">
             <el-input v-model="addform.Naturebusi" ></el-input>
@@ -87,8 +87,8 @@
       <!--编辑弹出层-->
       <el-dialog title="编辑" :visible.sync="editFormVisible" :close-on-click-modal="false" :append-to-body="true">
         <el-form ref="editform" :model="editform" label-width="80px" :rules="editFormRules">
-          <el-form-item label="省份代码:" prop="procincecode">
-            <el-input v-model="editform.Procincecode" auto-complete="off"></el-input>
+          <el-form-item label="省份代码:" prop="Provincecode">
+            <el-input v-model="editform.Provincecode" auto-complete="off"></el-input>
           </el-form-item>
           <el-form-item label="省份名称:" prop="province">
             <el-input v-model="editform.Province" ></el-input>
@@ -99,8 +99,8 @@
           <el-form-item label="机构类别:" prop="c_jglb">
             <el-input v-model="editform.C_jglb" ></el-input>
           </el-form-item>
-          <el-form-item label="机构等次:" prop="c_jgbc">
-            <el-input v-model="editform.C_jgbc" ></el-input>
+          <el-form-item label="机构等次:" prop="C_jgdc">
+            <el-input v-model="editform.C_jgdc" ></el-input>
           </el-form-item>
           <el-form-item label="经营性质:" prop="Naturebusi">
             <el-input v-model="editform.Naturebusi" ></el-input>
@@ -130,15 +130,15 @@ export default {
     return {
       // 添加
       addform: {
-        unitname: '',
-        addr: '',
-        c_syzxs: '',
-        c_jglb: '',
-        c_jgbc: '',
-        naturebusi: '',
-        c_fwdx: '',
-        province: '',
-        procincecode: ''
+        Unitname: '',
+        Addr: '',
+        C_syzxs: '',
+        C_jglb: '',
+        C_jgdc: '',
+        Naturebusi: '',
+        C_fwdx: '',
+        Province: '',
+        Provincecode: ''
       },
       addFormVisible: false,
       addFormRules: {
@@ -146,11 +146,11 @@ export default {
         Addr: [{required: true, message: '请输入地址', trigger: 'blur'}],
         C_syzxs: [{required: true, message: '请输入所有制形式', trigger: 'blur'}],
         C_jglb: [{required: true, message: '请输入机构类别', trigger: 'blur'}],
-        C_jgbc: [{required: true, message: '请输入机构等次', trigger: 'blur'}],
+        C_jgdc: [{required: true, message: '请输入机构等次', trigger: 'blur'}],
         Naturebusi: [{required: true, message: '请输入经营性质', trigger: 'blur'}],
         C_fwdx: [{required: true, message: '请输入服务对象', trigger: 'blur'}],
         Province: [{required: true, message: '请输入省份名称', trigger: 'blur'}],
-        Procincecode: [{required: true, message: '请输入省份代码', trigger: 'blur'}]
+        Provincecode: [{required: true, message: '请输入省份代码', trigger: 'blur'}]
       },
       // 查询
       unitname: '', // 查询条件
@@ -165,7 +165,7 @@ export default {
         Naturebusi: '',
         C_fwdx: '',
         Province: '',
-        Procincecode: ''
+        Provincecode: ''
       },
       // 分页数据
       pageData: {
@@ -188,7 +188,7 @@ export default {
         Naturebusi: '',
         C_fwdx: '',
         Province: '',
-        Procincecode: ''
+        Provincecode: ''
       },
       editFormVisible: false,
       editFormRules: {
@@ -200,7 +200,7 @@ export default {
         Naturebusi: [{required: true, message: '请输入经营性质', trigger: 'blur'}],
         C_fwdx: [{required: true, message: '请输入服务对象', trigger: 'blur'}],
         Province: [{required: true, message: '请输入省份名称', trigger: 'blur'}],
-        Procincecode: [{required: true, message: '请输入省份代码', trigger: 'blur'}]
+        Provincecode: [{required: true, message: '请输入省份代码', trigger: 'blur'}]
       },
       editLoading: false,
       // 删除
@@ -211,16 +211,16 @@ export default {
   methods: {
     // 查询查询数据的方法
     getUsers: function () {
-      let para = {unitname: this.unitname, Currentpage: this.pageData.pageNO}
+      let para = {Unitname: this.unitname, Currentpage: this.pageData.pageNO}
       let _this = this
       this.listLoading = true
       this.$api.medicaAPI.MedicalPage(para).then(res => {
-        let {Retcode, Reason, Pagesize, Curpage, Count, Userinfos} = res
+        let {Retcode, Reason, Pagesize, Curpage, Count, Hospitals} = res
         if (Retcode === 1) { // 成功
           _this.pageData.Count = Count // 总条数
           _this.pageData.totalDataNumber = Pagesize // 总页数
           _this.pageData.pageNO = Curpage // 当前第几页
-          _this.pageData.tableData = Userinfos
+          _this.pageData.tableData = Hospitals
           this.listLoading = false
         } else { // 失败
           this.$message.error(Reason)
@@ -239,7 +239,7 @@ export default {
         Naturebusi: '',
         C_fwdx: '',
         Province: '',
-        Procincecode: ''
+        Provincecode: ''
       }
     },
     // 新增 医疗机构
@@ -251,6 +251,7 @@ export default {
             this.addLoading = true
             var aa = this.addform
             let para = Object.assign({}, aa)
+            console.log('添加的数据', para)
             this.$api.medicaAPI.Addhospital(para).then((res) => {
               console.log('=======开始添加接口=========')
               let {Retcode, Reason} = res
@@ -278,9 +279,16 @@ export default {
     },
     // 编辑
     HandleEdit: function (index, row) {
-      this.editFormVisible = true
       console.log('得到的数据', row)
-      this.editform = Object.assign({}, row)
+      if (row.Ismodify === 0) {
+        this.$message({
+          type: 'warning',
+          message: '该数据禁止编辑！'
+        })
+      } else {
+        this.editFormVisible = true
+        this.editform = Object.assign({}, row)
+      }
     },
     // 修改
     updSubmit: function () {
@@ -300,7 +308,7 @@ export default {
                   message: '修改医疗机构成功！'
                 })
                 this.$refs['editform'].resetFields() // 清空表单
-                this.editdFormVisible = false // 关闭弹出层
+                this.editFormVisible = false // 关闭弹出层
                 this.getUsers() // 执行查询
               } else {
                 this.message.error(Reason)
@@ -314,25 +322,32 @@ export default {
     },
     // 删除
     handlDel: function (index, row) {
-      this.$confirm('确认删除该医疗机构？', '提示', {type: 'warning'}).then(() => {
-        this.listLoading = true
-        let para = {unitname: row.unitname, Method: 0}
-        this.$api.medicaAPI.delMedical(para).then((res) => {
-          this.listLoading = false
-          let {Retcode, Reason} = res
-          if (Retcode === 1) {
-            this.$message({
-              type: Reason,
-              message: '删除医疗机构成功！'
-            })
-            this.getUsers()
-          } else {
-            this.message.error(Reason)
-          }
+      if (row.Ismodify === 0) {
+        this.$message({
+          type: 'warning',
+          message: '该数据禁止删除！'
         })
-      }).catch(() => {
-        console.log('取消删除')
-      })
+      } else {
+        this.$confirm('确认删除该医疗机构？', '提示', {type: 'warning'}).then(() => {
+          this.listLoading = true
+          let para = {unitname: row.unitname, Method: 0}
+          this.$api.medicaAPI.delMedical(para).then((res) => {
+            this.listLoading = false
+            let {Retcode, Reason} = res
+            if (Retcode === 1) {
+              this.$message({
+                type: Reason,
+                message: '删除医疗机构成功！'
+              })
+              this.getUsers()
+            } else {
+              this.message.error(Reason)
+            }
+          })
+        }).catch(() => {
+          console.log('取消删除')
+        })
+      }
     },
     selsChange: function (sels) {
       this.sels = sels

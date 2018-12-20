@@ -7,7 +7,7 @@ export default {
   },
   // 查询分页
   MedicalPage (params) {
-    return post('/main/searchuser', params)
+    return post('/main/searchhospital', params)
   },
   // 删除
   delMedical (params) {
@@ -15,6 +15,18 @@ export default {
   },
   // 修改
   updateMedical (params) {
-    return post('/main/searchuser', params)
+    return post('/main/updatehospital', params)
+  },
+  // 查询医师
+  MedicalDoctor (params) {
+    return post('/main/searchdoctinfo', params)
+  },
+  // 查询护士
+  MedicalNurse (params) {
+    return post('/main/searchnuresinfo', params)
+  },
+  // 操作日志
+  MedicalLog (params) {
+    return post('/main/searchoperatelog', params)
   }
 }

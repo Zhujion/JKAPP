@@ -1,4 +1,4 @@
-<template>
+<template id="aaa">
  <div class="home">
    <HeadNav></HeadNav>
    <div class="lef-fixed-right-auto">
@@ -21,7 +21,6 @@
 import HeadNav from './headNav.vue'
 import Bread from './bread.vue'
 import LeftMenu from './leftMenu.vue'
-
 export default {
   data () {
     return {
