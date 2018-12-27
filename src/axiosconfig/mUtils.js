@@ -51,3 +51,4 @@ export const generateRoutesFromMenu = (menuData = [], routes = [], componentNew)
   }
   return routes
 }
+

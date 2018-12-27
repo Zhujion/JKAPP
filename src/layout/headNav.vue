@@ -91,12 +91,22 @@ export default {
       this.$api.userAPI.UserOut(param).then((res) => {
         let {Retcode, Reason} = res
         if (Retcode === 1) {
+          let readUser = mUtils.getStore('userInfo')
+          console.log('========退出读取=======', readUser)
+          if (readUser) {
+            if (!readUser.isSave) { // 如果为false 代表用户没有勾选记住密码
+              console.log('========没有沟选=======')
+              localStorage.removeItem('userInfo')
+            }
+          }
+          localStorage.removeItem('menuData')
           mUtils.clearCookie() // 清除用户信息
           this.$message({
             type: 'success',
             message: '用户登出成功!'
           })
-          this.$router.push('/')
+          // this.$router.push('/')
+          window.location.href = '/'
         } else {
           this.$message({
             type: 'info',

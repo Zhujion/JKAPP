@@ -32,5 +32,9 @@ export default {
   // 登出
   UserOut (params) {
     return post('/main/loginout', params)
+  },
+  // 查询用户日志
+  UserLog (params) {
+    return post('/main/searchuserlog', params)
   }
 }

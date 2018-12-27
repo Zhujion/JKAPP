@@ -48,8 +48,13 @@ router.beforeEach((route, redirect, next) => {
   // 定位到首页时 清空缓存数据
   console.log('route-----', route.path)
   if (route.path === '/') {
-    console.log('进来清除用户信息和菜单')
-    localStorage.removeItem('userInfo')
+    let readUser = mUtils.getStore('userInfo')
+
+    if (readUser) {
+      if (!readUser.isSave) {
+        localStorage.removeItem('userInfo')
+      }
+    }
     localStorage.removeItem('menuData')
     store.commit('ADD_MENU', [])
   }

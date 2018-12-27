@@ -1,22 +1,8 @@
 <template>
   <div>
     <section class="data_section">
-      <el-row :gutter="10" >
-        <el-card shadow="always" class="el_card">
-          <el-col :xs="8"  :sm="6" :md="6" :lg="6" :xl="6"><div class="pay data_list"><p class="list_number">{{userForm.loginDate}}</p>上次登录（时间）</div></el-col>
-          <el-col :xs="8" :sm="6" :md="6" :lg="6" :xl="6"><div class="income data_list"><p class="list_number">{{userForm.loginIP}}</p>登录地址（IP）</div></el-col>
-          <el-col :xs="6"  :sm="6" :md="4" :lg="4" :xl="4"><div class="pay data_list"><p class="list_number">{{userConutForm.userAllConut}}</p>用户（人）</div></el-col>
-          <el-col :xs="6" :sm="6" :md="4" :lg="4" :xl="4"><div class="income data_list"><p class="list_number">{{userConutForm.userAdminConut}}</p>管理员（人）</div></el-col>
-          <el-col :xs="8" :sm="6" :md="4" :lg="4" :xl="4"><div class="hidden_investors data_list" ><p class="list_number">{{userConutForm.userConut}}</p>普通用户（人）</div></el-col>
-        </el-card>
-      </el-row>
       <el-row :gutter="10" class="row_list">
-        <el-col :span="12">
-          <bardata  id="bar_data"></bardata>
-        </el-col>
-        <el-col :span="12">
-          <userTable id="cerate_id"></userTable>
-        </el-col>
+        <queryDn></queryDn>
       </el-row>
     </section>
   </div>
@@ -25,6 +11,7 @@
 <script>
 import bardata from './echarts/bardata'
 import userTable from './echarts/userTable'
+import queryDn from './medica/queryDn'
 export default {
   name: 'index',
   data () {
@@ -38,8 +25,8 @@ export default {
       // 登录名 IP 登录时间
       userForm: {
         userName: 'admin',
-        loginIP: '192.168.5.178',
-        loginDate: '2018-12-15 12：23：23'
+        loginIP: '1111111111',
+        loginDate: ''
       },
       // 表格  查询
       bar_id: 'bar_data',
@@ -49,16 +36,24 @@ export default {
   },
   components: {
     bardata,
-    userTable
+    userTable,
+    queryDn
   },
   beforeDestroy () {
-    if (!this.bar_id || !this.cerate_id) {
-      return
+  },
+  methods: {
+    userme () {
+      console.log('获取的缓存信息++++++++++++', localStorage.getItem('userInfo'))
+      let UserInfo = JSON.parse(localStorage.getItem('userInfo'))
+      console.log(UserInfo)
+      this.userForm.userName = UserInfo.User
+      this.userForm.loginIP = UserInfo.loginIP
+      this.userForm.loginDate = UserInfo.loginDate
+      // this.$message('上次登录时间：' + this.userForm.loginDate + ' 上次登录IP：' + this.userForm.loginIP)
     }
-    this.bar_chart.dispose()
-    this.line_chart.dispose()
-    this.bar_chart = null
-    this.line_chart = null
+  },
+  mounted () {
+    this.userme()
   }
 }
 </script>

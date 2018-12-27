@@ -17,13 +17,13 @@
       <el-table :data="pageData.tableData" overf highlight-current-row v-loading="listLoading"
                 @selection-change="selsChange" style="width: 100%">
         <el-table-column type="selection" ></el-table-column>
-        <el-table-column prop="Username" label="用户名" sortable></el-table-column>
-        <el-table-column prop="Usertype" label="用户类型" sortable  :formatter="formUsertype"></el-table-column>
-        <el-table-column prop="Email" label="联系邮箱" sortable></el-table-column>
-        <el-table-column prop="Phonenum" label="联系电话" sortable ></el-table-column>
-        <el-table-column prop="Company" label="公司名称" sortable></el-table-column>
-        <el-table-column prop="Address" label="地址" sortable></el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column prop="Username" label="用户名" sortable align="center"></el-table-column>
+        <el-table-column prop="Usertype" label="用户类型" sortable  :formatter="formUsertype" align="center"></el-table-column>
+        <el-table-column prop="Email" label="联系邮箱" sortable align="center"></el-table-column>
+        <el-table-column prop="Phonenum" label="联系电话" sortable align="center"></el-table-column>
+        <el-table-column prop="Company" label="公司名称" sortable align="center"></el-table-column>
+        <el-table-column prop="Address" label="地址" sortable align="center"></el-table-column>
+        <el-table-column label="操作"  align="center">
           <template slot-scope="scope">
             <el-button size="small" @click="HandleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button type="danger" @click="handlDel(scope.$index, scope.row)" size="small">删除</el-button>

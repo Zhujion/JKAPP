@@ -13,7 +13,7 @@
         <!--验证码-->
       </el-form-item>
       <el-form-item>
-        <el-checkbox    v-model="checked" class="">七天免登录</el-checkbox >
+        <el-checkbox    v-model="checked" class="">记住密码</el-checkbox >
       </el-form-item>
       <el-form-item>
         <el-button type="primary" style="width: 100%;" class="inputhigh"  @click.native.prevent="submitLogin('userForm')">登录</el-button>
@@ -54,14 +54,7 @@ export default {
     ...mapActions(['addMenu', 'loadRoutes']),
     // 登录操作
     submitLogin (userForm) {
-      // this.saveUserInfo() // 存入缓存 ,用户展示用户名
-      // console.log('保存用户通过')
-      // this.generateMenuPushIndex('') // 模拟动态生成菜单并定位到index
-      // console.log('动态生成通过')
-      // this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
-      // console.log('菜单展开动态')
       this.$refs[userForm].validate((valid) => {
-        // this.$router.push({path: '/Home'})
         if (valid) {
           this.loginGo() // 登录方法
         }
@@ -72,11 +65,11 @@ export default {
       // 定义要传输的josn字段
       let loginParams = { User: this.userForm.User, Password: this.userForm.Password }
       // 接口调用
+      console.log('登录信息-------', loginParams)
       this.$api.userAPI.login(loginParams).then(res => {
-        let {Retcode, Reason, Usertype} = res
-        console.log('-----------', res)
+        let {Retcode, Reason, Usertype, Time, UserIp} = res
+        console.log('返回信息===', res)
         if (Retcode !== 1) {
-          console.log('登录失败')
           this.$message({
             type: 'error',
             message: Reason
@@ -89,16 +82,9 @@ export default {
             let {Retcode, Reason, Menues} = res
             console.log('获取菜单信息', Retcode)
             if (Retcode === 1) {
-              if (this.checked) {
-                mUtils.setCoockie(this.userForm.User, this.userForm.Password, 7) // 保存用户信息
-              } else {
-                mUtils.clearCookie() // 删除用户信息
-              }
-              this.saveUserInfo() // 存入缓存 ,用户展示用户名
-              console.log('登陆--------路由', JSON.stringify(Menues))
-              let userInfo = mUtils.getStore('userInfo')
-              console.log('登陆----------------', JSON.stringify(userInfo))
-              this.generateMenuPushIndex(Menues) // 模拟动态生成菜单并定位到index
+              mUtils.setCoockie(this.userForm.User, this.userForm.Password, 7) // 保存用户信息
+              this.saveUserInfo(Usertype, Time, UserIp) // 存入缓存 ,用户展示用户名
+              this.generateMenuPushIndex(Menues, Usertype, Time, UserIp) // 模拟动态生成菜单并定位到index
               this.$store.dispatch('initLeftMenu') // 设置菜单始终为展开状态
             } else { // 菜单错误
               this.$message.error(Reason)
@@ -108,7 +94,7 @@ export default {
       })
     },
     // 动态生成菜单
-    generateMenuPushIndex (menData) {
+    generateMenuPushIndex (menData, Usertype, Time, UserIp) {
       // const menData = [
       //   {
       //     path: '/index',
@@ -176,7 +162,6 @@ export default {
       console.log('isLoadRoutes', !this.isLoadRoutes)
       if (!this.isLoadRoutes) { // 首次进来为false,改变其状态为true
         const routes = mUtils.generateRoutesFromMenu(menData) // 根据菜单生成路由信息，需要将数据库返回对象的 Key值小写
-        // console.log('嵌套路由======', JSON.stringify(routes))
         const asyncRouterMap = [
           {
             path: '/404',
@@ -189,35 +174,42 @@ export default {
             name: '',
             hidden: true,
             component: (resolve) => require(['layout/home.vue'], resolve),
+            // component: (resolve) => require(['page/medica/queryDn.vue'], resolve),
             redirect: '/index', // 重定向
             children: routes // 嵌套路由
           }
         ]
-        console.log('打印路由', JSON.stringify(asyncRouterMap))
         this.$router.addRoutes(asyncRouterMap) // 添加路由
         this.loadRoutes() // true 第二次就不用路由了
       }
-      this.$router.push('/index') // 加载模块
+      console.log('用户类型===========', Usertype)
+      if (Usertype === 1) {
+        this.$router.push('/index') // 加载模块
+      } else {
+        this.$router.push('/medica/queryDn') // 加载模块
+      }
+      console.log('加载模块')
       this.$message({
         type: 'success',
-        message: '登陆成功！'
+        message: '登陆成功！上次登录时间： ' + Time + ' / IP：' + UserIp,
+        duration: 5000
       })
     },
     // 保存用户信息
-    saveUserInfo () {
+    saveUserInfo (UserType, Time, UserIp) {
       const userinfo = {
-        User: this.userForm.User
+        User: this.userForm.User,
+        Userpwd: this.userForm.Password,
+        UserType: UserType,
+        loginIP: UserIp,
+        loginDate: Time,
+        isSave: this.checked
       }
+      console.log('用户要保存的信息=====', userinfo)
       mUtils.setStore('userInfo', userinfo) // 将用户信息放入缓存
     },
     // cookie 倒计时
     getmiao: function () {
-      console.log('进来了=========')
-      // if (this.datamiao === 0) {
-      //   // 登录
-      //   alert('登录')
-      //   this.datamiao = 6
-      // }
       this.datamiao = this.datamiao - 1
       this.t = setTimeout(this.getmiao(), 1000)
     },
@@ -246,7 +238,6 @@ export default {
             this.loginGo() // 登录的方法
           }
         }).catch(() => {
-          console.log('更换账号---获取用户名', this.userForm.User)
           let param = {Username: this.userForm.User}
           this.$api.userAPI.UserOut(param).then((res) => {
             let {Retcode, Reason} = res
@@ -265,6 +256,19 @@ export default {
             }
           })
         })
+      } else {
+        // coocki 里面没有用户信息 从缓存里面读
+        console.log('coocki 里面没有用户信息 从缓存里面读')
+        let readUser = mUtils.getStore('userInfo')
+        console.log('coocki 里面没有用户信息 从缓存里面读', readUser)
+        if (readUser) {
+          if (readUser.isSave) {
+            // 如果用户勾选记住密码 赋值
+            this.userForm.User = readUser.User
+            this.userForm.Password = readUser.Userpwd
+            this.checked = true
+          }
+        }
       }
     },
     // 清除cookie

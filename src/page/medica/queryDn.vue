@@ -8,7 +8,7 @@
       </div>
       <div style="width: 700px;height:50px;margin: 0 auto;" >
         <el-input placeholder="请输入要搜索的医师、护士的唯一识别码" v-model="SearchValue"  class="input-with-select">
-          <el-select v-model="select" slot="prepend" placeholder="请选择类别" style="width: 80px;color: black;" @change="selectGet">
+          <el-select v-model="select" slot="prepend" placeholder="请选择" style="width: 80px;color: Black;" @change="selectGet">
             <el-option label="医师" value="1"></el-option>
             <el-option label="护士" value="2"></el-option>
           </el-select>

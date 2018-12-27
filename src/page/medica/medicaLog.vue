@@ -12,13 +12,13 @@
     </el-col>
     <!--列表-->
     <el-table :data="pageData.tableData" overf highlight-current-row v-loading="listLoading"
-              @selection-change="selsChange" style="width: 100%">
-      <el-table-column prop="Username" label="用户名" sortable ></el-table-column>
-      <el-table-column prop="UserIp" label="IP" sortable></el-table-column>
-      <el-table-column prop="Operate" label="操作名称" sortable ></el-table-column>
-      <el-table-column prop="IsSuccess" label="操作结果" sortable :formatter="formIsSuccess"></el-table-column>
-      <el-table-column prop="Time" label="操作时间" sortable></el-table-column>
-      <el-table-column prop="Detail" label="详细信息" sortable>
+               style="width: 100%">
+      <el-table-column prop="Username" label="用户名" sortable align="center" ></el-table-column>
+      <el-table-column prop="UserIp" label="IP" sortable align="center"></el-table-column>
+      <el-table-column prop="Operate" label="操作名称" sortable align="center"></el-table-column>
+      <el-table-column prop="IsSuccess" label="操作结果" sortable :formatter="formIsSuccess" align="center"></el-table-column>
+      <el-table-column prop="Time" label="操作时间" sortable :formatter="formTime" align="center"></el-table-column>
+      <el-table-column prop="Detail" label="详细信息" sortable align="center">
         <template slot-scope="scope">
           <el-popover trigger="hover" placement="top">
             <p>{{scope.row.Detail}}</p>
@@ -51,7 +51,7 @@ padding: 10px;
 margin: 10px 0px;
 }
 <script>
-
+import * as mUtils from 'utils/mUtils'
 export default {
   data () {
     return {
@@ -69,6 +69,10 @@ export default {
     }
   },
   methods: {
+    handleCurrentChange (val) {
+      this.pageData.pageNO = val
+      this.getUsers()
+    },
     getUsers () {
       let para = {SearchTag: this.userNameOrIP, Currentpage: this.pageData.pageNO}
       console.log(JSON.stringify(para))
@@ -89,7 +93,12 @@ export default {
     },
     // 操作结果转换
     formIsSuccess: function (row, column) {
-      return row.IsSuccess === 1 ? '成功' : row.Usertype === 0 ? '失败' : '未知'
+      return row.IsSuccess === 1 ? '成功' : row.IsSuccess === 0 ? '失败' : '未知'
+    },
+    // 时间转换formatDate
+    formTime: function (row, colunmn) {
+      var date = new Date(row.Time)
+      return mUtils.formatDate(date, 'yyyy-MM-dd hh:mm')
     }
   },
   created () {

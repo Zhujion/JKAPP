@@ -10,7 +10,7 @@
             <el-button round class="el-icon-search" type="primary" v-on:click="getUsers"></el-button>
           </el-form-item>
           <el-form-item>
-            <el-button class="el-icon-circle-plus" type="primary" @click="handleAdd"  >新增</el-button>
+            <el-button v-show="addbtn" class="el-icon-circle-plus" type="primary" @click="handleAdd"  >新增</el-button>
           </el-form-item>
         </el-form>
       </el-row>
@@ -18,15 +18,15 @@
       <el-table :data="pageData.tableData" overf highlight-current-row v-loading="listLoading"
                 @selection-change="selsChange" style="width: 100%">
         <el-table-column type="selection" aria-disabled="false" ></el-table-column>
-        <el-table-column prop="Unitname" label="医疗机构" sortable></el-table-column>
-        <el-table-column prop="Provincecode" label="省份代码" sortable></el-table-column>
-        <el-table-column prop="Province" label="省份名称" sortable></el-table-column>
-        <el-table-column prop="Addr" label="地址" sortable ></el-table-column>
-        <el-table-column prop="C_syzxs" label="所有制形式" sortable></el-table-column>
-        <el-table-column prop="Naturebusi" label="机构类别" sortable ></el-table-column>
-        <el-table-column label="操作" >
+        <el-table-column prop="Unitname" label="医疗机构" sortable align="center"></el-table-column>
+        <el-table-column prop="Provincecode" label="省份代码" sortable align="center"></el-table-column>
+        <el-table-column prop="Province" label="省份名称" sortable align="center"></el-table-column>
+        <el-table-column prop="Addr" label="地址" sortable align="center"></el-table-column>
+        <el-table-column prop="C_syzxs" label="所有制形式" sortable align="center"></el-table-column>
+        <el-table-column prop="Naturebusi" label="机构类别" sortable align="center"></el-table-column>
+        <el-table-column label="操作"  v-if="addbtn" align="center">
           <template slot-scope="scope">
-            <el-button size="small"  @click="HandleEdit(scope.$index, scope.row)">编辑</el-button>
+            <el-button size="small"  @click="HandleEdit(scope.$index, scope.row)">编22辑</el-button>
             <el-button type="danger" @click="handlDel(scope.$index, scope.row)" size="small">删除</el-button>
           </template>
         </el-table-column>
@@ -178,6 +178,7 @@ export default {
       },
       // 新增
       addLoading: false,
+      addbtn: true,
       // 编辑
       editform: {
         Unitname: '',
@@ -209,6 +210,14 @@ export default {
     }
   },
   methods: {
+    addISbtn: function () {
+      let userInfo = localStorage.getItem('userInfo')
+      if (userInfo.Usertype === '1') {
+        this.addbtn = true
+      } else {
+        this.addbtn = false
+      }
+    },
     // 查询查询数据的方法
     getUsers: function () {
       let para = {Unitname: this.unitname, Currentpage: this.pageData.pageNO}
@@ -384,6 +393,7 @@ export default {
   mounted () {
     // 加载前触发
     this.getUsers()
+    this.addISbtn()
   }
 }
 </script>

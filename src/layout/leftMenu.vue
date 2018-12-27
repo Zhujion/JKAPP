@@ -17,7 +17,7 @@
               <i :class="item.icon"></i>
               <span slot="title">{{item.name}}</span>
             </template>
-            <router-link v-for="(citem, cindex) in item.children" :to="citem.path" :key="cindex * index + 2">
+            <router-link v-for="(citem, cindex) in item.children" :to="citem.path" :key="cindex">
               <el-menu-item :index="citem.path">
                 <span slot="title">{{citem.name}}</span>
               </el-menu-item>
