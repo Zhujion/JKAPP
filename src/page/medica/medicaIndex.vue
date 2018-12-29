@@ -17,7 +17,7 @@
       <!--表格-->
       <el-table :data="pageData.tableData" overf highlight-current-row v-loading="listLoading"
                 @selection-change="selsChange" style="width: 100%">
-        <el-table-column type="selection" aria-disabled="false" ></el-table-column>
+        <el-table-column type="selection" aria-disabled="false" v-if="addbtn"></el-table-column>
         <el-table-column prop="Unitname" label="医疗机构" sortable align="center"></el-table-column>
         <el-table-column prop="Provincecode" label="省份代码" sortable align="center"></el-table-column>
         <el-table-column prop="Province" label="省份名称" sortable align="center"></el-table-column>
@@ -26,15 +26,14 @@
         <el-table-column prop="Naturebusi" label="机构类别" sortable align="center"></el-table-column>
         <el-table-column label="操作"  v-if="addbtn" align="center">
           <template slot-scope="scope">
-            <el-button size="small"  @click="HandleEdit(scope.$index, scope.row)">编22辑</el-button>
+            <el-button size="small"  @click="HandleEdit(scope.$index, scope.row)">编辑</el-button>
             <el-button type="danger" @click="handlDel(scope.$index, scope.row)" size="small">删除</el-button>
           </template>
         </el-table-column>
       </el-table>
       <!--分页下拉条-->
       <el-col :span="24">
-        <el-button type="danger" @click="batchRemove" :disabled="this.sels.length === 0">批量删除</el-button>
-        <el-button type="primary">全部导出</el-button>
+        <el-button type="danger" @click="batchRemove" :disabled="this.sels.length === 0" v-if="addbtn">批量删除</el-button>
         <!--pageSIze改变时会触发@size-change-->
         <!--currentPage 改变时会触发@currentPage -->
         <el-pagination
@@ -94,7 +93,7 @@
             <el-input v-model="editform.Province" ></el-input>
           </el-form-item>
           <el-form-item label="机构名称:" prop="unitname">
-            <el-input v-model="editform.Unitname" ></el-input>
+            <el-input v-model="editform.Unitname" disabled ></el-input>
           </el-form-item>
           <el-form-item label="机构类别:" prop="c_jglb">
             <el-input v-model="editform.C_jglb" ></el-input>
@@ -211,10 +210,13 @@ export default {
   },
   methods: {
     addISbtn: function () {
-      let userInfo = localStorage.getItem('userInfo')
-      if (userInfo.Usertype === '1') {
+      let userInfo = JSON.parse(localStorage.getItem('userInfo'))
+      console.log('医疗机构信息 用户类型======', userInfo.UserType)
+      if (userInfo.UserType === 1) {
+        console.log('true')
         this.addbtn = true
       } else {
+        console.log('false')
         this.addbtn = false
       }
     },
@@ -341,6 +343,7 @@ export default {
           this.listLoading = true
           let para = {unitname: row.unitname, Method: 0}
           this.$api.medicaAPI.delMedical(para).then((res) => {
+            console.log('删除医疗机构===', res)
             this.listLoading = false
             let {Retcode, Reason} = res
             if (Retcode === 1) {
@@ -363,7 +366,7 @@ export default {
     },
     // 批量删除
     batchRemove: function () {
-      var unitname = this.sels.map(item => item.Username).toString()
+      var unitname = this.sels.map(item => item.Unitname).toString()
       this.$confirm('确认删除所选中的用户吗？', '提示', {type: 'warning'}).then(() => {
         this.listLoading = true
         // let para = JSON.stringify(this.dellist)

@@ -43,7 +43,8 @@ export default {
       },
       userForm: {// 定义用户字段
         User: '',
-        Password: ''
+        Password: '',
+        UserType: ''
       },
       checked: false,
       datamiao: 6, // 确认登录的秒
@@ -62,25 +63,27 @@ export default {
     },
     // 登录的方法
     loginGo () {
+      localStorage.removeItem('menuData') // 删除菜单
       // 定义要传输的josn字段
       let loginParams = { User: this.userForm.User, Password: this.userForm.Password }
       // 接口调用
-      console.log('登录信息-------', loginParams)
       this.$api.userAPI.login(loginParams).then(res => {
         let {Retcode, Reason, Usertype, Time, UserIp} = res
-        console.log('返回信息===', res)
         if (Retcode !== 1) {
           this.$message({
             type: 'error',
             message: Reason
           })
         } else {
+          // 判断缓存中的用户是否是同一类型用户给
+          if (this.userForm.UserType !== Usertype) {
+            this.isLoadRoutes = false
+            console.log('改变----状态')
+          }
           // 登录成功
           let menutype = {Usertype: Usertype}
-          console.log('登录成功，用户类型', Usertype)
           this.$api.userAPI.menudata(menutype).then(res => {
             let {Retcode, Reason, Menues} = res
-            console.log('获取菜单信息', Retcode)
             if (Retcode === 1) {
               mUtils.setCoockie(this.userForm.User, this.userForm.Password, 7) // 保存用户信息
               this.saveUserInfo(Usertype, Time, UserIp) // 存入缓存 ,用户展示用户名
@@ -159,8 +162,9 @@ export default {
       mUtils.setStore('menuData', menData) // 将菜单放入缓存
       // console.log('menuData缓存的菜单信息', JSON.parse(localStorage.getItem('menuData')))
       this.addMenu(menData) // 生成菜单,将菜单放入store
-      console.log('isLoadRoutes', !this.isLoadRoutes)
+      console.log('000000000000000------', !this.isLoadRoutes)
       if (!this.isLoadRoutes) { // 首次进来为false,改变其状态为true
+        console.log('进来加载路由！')
         const routes = mUtils.generateRoutesFromMenu(menData) // 根据菜单生成路由信息，需要将数据库返回对象的 Key值小写
         const asyncRouterMap = [
           {
@@ -184,9 +188,9 @@ export default {
       }
       console.log('用户类型===========', Usertype)
       if (Usertype === 1) {
-        this.$router.push('/index') // 加载模块
+        this.$router.push('/index') // 加载模块 管理员
       } else {
-        this.$router.push('/medica/queryDn') // 加载模块
+        this.$router.push('/medica/queryDn') // 加载模块 普通用户
       }
       console.log('加载模块')
       this.$message({
@@ -215,19 +219,13 @@ export default {
     },
     // 读取cookie
     getCookie: function () {
+      console.log('document.cookie.length=', mUtils.getCookie('userName'))
+      console.log('document.cookie.length=', document.cookie)
       // 获取用户的coocki
-      if (document.cookie.length > 0) {
+      if (mUtils.getCookie('userName') != null) {
         this.checked = true
-        var arr = document.cookie.split(';')
-        for (var i = 0; i < arr.length; i++) {
-          var arr2 = arr[i].split('=')
-          if (arr2[0] === 'userName') {
-            this.userForm.User = arr2[1] // 保存到保存数据的地方
-          }
-          if (arr2[0] === ' userPwd') {
-            this.userForm.Password = arr2[1]
-          }
-        }
+        this.userForm.Password = mUtils.getCookie('userPwd')
+        this.userForm.User = mUtils.getCookie('userName') // 保存到保存数据的地方
         // 判断 是否登录
         this.$confirm('检测到用户信息，是否登录！', '自动登录', {
           confirmButtonText: '确定登录(' + this.datamiao + ')S',
@@ -239,8 +237,10 @@ export default {
           }
         }).catch(() => {
           let param = {Username: this.userForm.User}
+          console.log('更换账号信息====', param)
           this.$api.userAPI.UserOut(param).then((res) => {
             let {Retcode, Reason} = res
+            console.log('更换账号====', res)
             if (Retcode === 1) {
               this.$message({
                 type: 'success',
@@ -266,6 +266,7 @@ export default {
             // 如果用户勾选记住密码 赋值
             this.userForm.User = readUser.User
             this.userForm.Password = readUser.Userpwd
+            this.userForm.UserType = readUser.UserType
             this.checked = true
           }
         }

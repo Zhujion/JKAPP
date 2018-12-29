@@ -16,14 +16,22 @@ export const setStore = (name, content) => {
 export function setCoockie (cName, cpwd, exdays) {
   var exdate = new Date() // 获取时间
   exdate.setTime(exdate.getTime() + 24 * 60 * 60 * 1000 * exdays)// 保存天数
+  console.log('开始保存的天数、', exdays, cName, cpwd)
   // 字符串拼接cookie
   window.document.cookie = 'userName' + '=' + cName + ';path=/;expires=' + exdate.toGMTString()
   window.document.cookie = 'userPwd' + '=' + cpwd + ';path=/;expires=' + exdate.toGMTString()
+  console.log('结束保存的天数、', exdays)
 }
 // 清除 cookie
 export function clearCookie () {
   // 修改2值都为空，天数为负1天就好了
-  setCoockie('', '', -1)
+  console.log('删除============clearCookie')
+  setCoockie(' ', ' ', -1)
+}
+// 获取单个的coockie
+export function getCookie (name) {
+  var v = window.document.cookie.match('(^|;) ?' + name + '=([^;]*)(;|$)')
+  return v ? v[2] : null
 }
 
 /**

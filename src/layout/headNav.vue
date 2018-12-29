@@ -92,7 +92,8 @@ export default {
         let {Retcode, Reason} = res
         if (Retcode === 1) {
           let readUser = mUtils.getStore('userInfo')
-          console.log('========退出读取=======', readUser)
+          mUtils.clearCookie() // 清除用户信息setCoockie clearCookie
+          console.log('========退出232323读取=======', readUser)
           if (readUser) {
             if (!readUser.isSave) { // 如果为false 代表用户没有勾选记住密码
               console.log('========没有沟选=======')
@@ -100,13 +101,13 @@ export default {
             }
           }
           localStorage.removeItem('menuData')
-          mUtils.clearCookie() // 清除用户信息
           this.$message({
             type: 'success',
             message: '用户登出成功!'
           })
-          // this.$router.push('/')
-          window.location.href = '/'
+          this.$router.push('/')
+          window.location.reload() // 刷新当前页
+          // window.location.href = '/'
         } else {
           this.$message({
             type: 'info',

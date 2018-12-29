@@ -2,11 +2,15 @@ import Vue from 'vue'
 import axios from 'axios'
 import qs from 'qs'
 import { Message, Loading, MessageBox } from 'element-ui'
+// import * as mUtils from '@/utils/mUtils'
 
 // 响应时间
 axios.defaults.timeout = 5 * 1000
 // 配置Cookie
 axios.defaults.withCredentials = true
+
+axios.defaults.xsrfCookieName = 'XSRF-TOKEN'
+axios.defaults.xsrfHeaderName = 'X-XSRF-TOKEN'
 // 配置请求头
 axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8'
 // 静态资源
@@ -34,11 +38,14 @@ axios.interceptors.request.use(
       spinner: 'el-icon-loading',
       background: 'rgba(0,0,0,0.7)'
     })
-    let token = localStorage.getItem('x-auth-token')
+    // let token = localStorage.getItem('x-auth-token')
+    // config.headers.token = 'wS0hZPebMoEDGM0eVFWkzMJnTfQH8we2'
     // token = '我是请求头'
-    if (token) {
-      config.headers.token = `${token}`
-    }
+    // console.log(`${token}`)
+    // console.log('99999999999999我是请求头t', mUtils.getCookie('csrftoken'))
+    // if (token) {
+    //   config.headers.token = `${token}`
+    // }
     if (config.method === 'post') {
       config.data = qs.stringify(config.data)
     }
@@ -55,6 +62,9 @@ axios.interceptors.response.use(
   res => {
     // 根据后台定义的返回主体。1是成功 其他都是失败
     if (res.data.Retcode === 1) {
+      console.log(res)
+      // mUtils.setStore('x-auth-token', res.data.token) // 储存服务器返回的token信息
+      // console.log('响应拦截器获取的token', res.data.token)
       loadingInstance.close()
       return res
     } else if (res.data.Retcode === 3) {
